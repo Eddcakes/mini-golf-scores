@@ -1,7 +1,11 @@
+import { Scores } from "./components/Scores";
+import data from "./assets/data.json";
+
 function App() {
   return (
     <div>
-      <header>header</header>
+      <header>by hole, also want cumulative scores</header>
+      <Scores data={data} />
     </div>
   );
 }
