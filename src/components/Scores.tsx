@@ -13,30 +13,29 @@ export function Scores({ data }: IData) {
   const datasets = splitIntoDatasets(data);
 
   useEffect(() => {
-    console.log(data);
-    console.log(datasets);
     const svg = select(svgRef.current);
     if (!dims) return;
 
     const minHole = 1;
     const maxHole = 18;
-    const minShot = 0; // min(data, (d)=> d.score)
-    const maxShot = 10; //max(data, (d)=> d.score)
+    const minShot = 0; // min<IScore, number>(data, (d) => d.score);
+    const maxShot = 10; // max<IScore, number>(data, (d) => d.score);
 
     const xScale = scaleLinear()
       .domain([minHole, maxHole])
       .range([0, dims.width]);
     const yScale = scaleLinear()
-      .domain([maxShot, minShot])
+      .domain([maxShot, minShot] as [number, number])
       .range([0, dims.height]);
 
     const createPath = line<IScore>()
       .x((d) => xScale(d.hole))
       .y((d) => yScale(d.score));
+    const legendSpacing = dims.width / datasets.length;
 
-    svg.attr("width", dims.width).attr("height", dims.height);
+    //svg.attr("width", dims.width).attr("height", dims.height);
 
-    datasets.forEach((player) => {
+    datasets.forEach((player, idx) => {
       svg
         .selectAll(`.${player.label}-shot`)
         .data(player.data)
@@ -65,6 +64,19 @@ export function Scores({ data }: IData) {
         )
         .attr("fill", "none")
         .attr("d", createPath);
+
+      svg
+        .selectAll(`.${player.label}`)
+        .data([`${player.label}`])
+        .join("text")
+        .attr("class", `${player.label}-line legend`)
+        .attr("x", legendSpacing / 2 + idx * legendSpacing)
+        .attr("y", "-0.25rem")
+        .attr(
+          "fill",
+          mapColors.find((c) => c.name === player.label)?.color || "black"
+        )
+        .text(player.label);
     });
 
     const xAxis: any = axisBottom(xScale).ticks(maxHole);
@@ -73,10 +85,7 @@ export function Scores({ data }: IData) {
       .style("transform", `translateY(${dims.height}px)`)
       .call(xAxis);
     const yAxis: any = axisLeft(yScale).ticks(maxShot);
-    svg
-      .select(".y-axis")
-      //.style("transform", `translateX(${dims.Width}px)`)
-      .call(yAxis);
+    svg.select(".y-axis").call(yAxis);
   }, [dims?.height, dims?.width]);
 
   return (

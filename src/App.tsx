@@ -7,6 +7,9 @@ const testData = [
   { name: "RYAN", hole: 1, score: 5 },
   { name: "RYAN", hole: 2, score: 3 },
   { name: "RYAN", hole: 3, score: 7 },
+  { name: "PAUL", hole: 1, score: 2 },
+  { name: "PAUL", hole: 2, score: 3 },
+  { name: "PAUL", hole: 3, score: 4 },
 ];
 
 function App() {
