@@ -1,0 +1,11 @@
+svg {
+  background-color: #eeeeee;
+  display: block;
+  width: 100%;
+  overflow: visible;
+  margin-bottom: 2rem;
+}
+
+.wrapper {
+  width: 100%;
+}
