@@ -1,0 +1,5 @@
+.legend {
+  display: flex;
+  font-weight: bold;
+  justify-content: space-around;
+}

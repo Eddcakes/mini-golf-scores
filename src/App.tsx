@@ -1,4 +1,7 @@
+import { useState } from "react";
+import { Legend } from "./components/Legend";
 import { Scores } from "./components/Scores";
+import golfData from "./assets/data.json";
 
 const testData = [
   { name: "MG", hole: 1, score: 2 },
@@ -13,11 +16,27 @@ const testData = [
 ];
 
 function App() {
+  const data = golfData;
+  const legendData = [...new Set(data.map((data) => data.name))];
+  const [showing, setShowing] = useState<string[]>(legendData);
+  const onChangeShowing = (name: string) => {
+    const newShowingItems = showing.includes(name)
+      ? showing.filter((item) => item !== name)
+      : [...showing, name];
+    setShowing(newShowingItems);
+  };
+
+  const chartData = data.filter((d) => showing.includes(d.name));
   return (
     <div>
       <header>header</header>
       <main>
-        <Scores data={testData} />
+        <Legend
+          data={legendData}
+          onChange={onChangeShowing}
+          showing={showing}
+        />
+        <Scores data={chartData} />
       </main>
       <footer>something</footer>
     </div>
