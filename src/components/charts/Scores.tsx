@@ -38,7 +38,7 @@ export function Scores({ initialData, cumulative = false }: ScoresProps) {
   } else {
     data = initialData;
   }
-  const datasets = splitIntoDatasets(data, false);
+  const datasets = splitIntoDatasets(data);
   useEffect(() => {
     const svg = select(svgRef.current);
     if (!dims) return;
