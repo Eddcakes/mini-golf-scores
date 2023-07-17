@@ -26,7 +26,24 @@ function App() {
     setShowing(newShowingItems);
   };
 
+  const toggleShowingAll = () => {
+    if (showing.length > 0) {
+      uncheckAll();
+    } else {
+      checkAll();
+    }
+  };
+  const checkAll = () => {
+    setShowing([...legendData]);
+  };
+  const uncheckAll = () => {
+    setShowing([]);
+  };
+
+  const [cumulative, setCumulative] = useState(false);
+
   const chartData = data.filter((d) => showing.includes(d.name));
+
   return (
     <div>
       <header>header</header>
@@ -35,10 +52,21 @@ function App() {
           data={legendData}
           onChange={onChangeShowing}
           showing={showing}
+          toggleShowingAll={toggleShowingAll}
         />
-        <Scores data={chartData} />
+        <Scores initialData={chartData} cumulative={cumulative} />
       </main>
-      <footer>something</footer>
+      <footer>
+        <label className="checkbox">
+          <input
+            type="checkbox"
+            value={cumulative ? "overall score" : "by hole"}
+            checked={cumulative}
+            onChange={() => setCumulative(!cumulative)}
+          />
+          cumulative
+        </label>
+      </footer>
     </div>
   );
 }

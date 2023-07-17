@@ -9,7 +9,7 @@ import {
 } from "d3";
 import useResizeObserver from "../hooks/useResizeObserver";
 import "./Scores.css";
-import { IData, IScore } from "../models/data";
+import { IScore } from "../models/data";
 import { formatTooltipText, splitIntoDatasets } from "../utils/data";
 import { mapColors } from "../utils/svg";
 import { Tooltip } from "./Tooltip";
@@ -17,11 +17,29 @@ import { Tooltip } from "./Tooltip";
 type XScale = ScaleLinear<number, number>;
 type YScale = ScaleLinear<number, number>;
 
-export function Scores({ data }: IData) {
+interface ScoresProps {
+  initialData: IScore[];
+  cumulative: boolean;
+}
+
+export function Scores({ initialData, cumulative = false }: ScoresProps) {
   const wrapperRef = useRef(null);
   const svgRef = useRef(null);
   const dims = useResizeObserver(wrapperRef);
-  const datasets = splitIntoDatasets(data);
+  let data: IScore[] = [];
+  if (cumulative) {
+    let cumulativeScoreMap: Record<string, number> = {};
+    const cumulativeData = initialData.map((d) => {
+      const { name, score } = d;
+      cumulativeScoreMap[name] = (cumulativeScoreMap[name] || 0) + score;
+      return { ...d, score: cumulativeScoreMap[name] };
+    });
+    data = cumulativeData;
+  } else {
+    data = initialData;
+  }
+  console.log(data);
+  const datasets = splitIntoDatasets(data, false);
   useEffect(() => {
     const svg = select(svgRef.current);
     if (!dims) return;
@@ -29,7 +47,7 @@ export function Scores({ data }: IData) {
     const minHole = 1;
     const maxHole = 18;
     const minShot = 0; // min<IScore, number>(data, (d) => d.score); //could -1
-    const maxShot = 10; // max<IScore, number>(data, (d) => d.score); //could + however many
+    const maxShot = cumulative ? 100 : 10; // max<IScore, number>(data, (d) => d.score); //could + however many
 
     const xScale: XScale = scaleLinear()
       .domain([minHole, maxHole])
@@ -50,7 +68,7 @@ export function Scores({ data }: IData) {
     const transitionTime = 200;
     svg.selectAll("*").remove();
     const tooltip = select(".tooltip");
-    datasets.forEach((player, idx) => {
+    datasets.forEach((player) => {
       // circle points
       svg
         .selectAll(`.${player.label}-shot`)
@@ -68,18 +86,23 @@ export function Scores({ data }: IData) {
         .attr("r", defaultRadius)
         .attr("cx", (shot) => xScale(shot.hole))
         .attr("cy", (shot) => yScale(shot.score))
-        // can we make invisible bigger radius so hover doesnt have to be exact
+        // can we make invisible bigger radius so hover doesn't have to be exact
 
         .on("mouseover", (event) => {
           // Filter dataset points with the same coordinates
+          // this might need editing to work with cumulative
           const sameCoordinatesData = data.filter((record) => {
             const targetData = event.target.__data__;
+            // target data is fine
+            // but record data is not cumulative
+            console.log(record.score);
+            console.log(event.target.__data__);
             return (
               record.hole === targetData.hole &&
               record.score === targetData.score
             );
           });
-
+          console.log(sameCoordinatesData);
           // Extract names from the filtered dataset
           const tooltipContent = sameCoordinatesData
             .map((record) => formatTooltipText(record))
@@ -126,10 +149,10 @@ export function Scores({ data }: IData) {
 
     xAxisGroup.select(".domain").remove(); //hide the connecting line
 
-    const yAxis = axisLeft(yScale).ticks(maxShot);
+    const yAxis = axisLeft(yScale).ticks(cumulative ? 10 : maxShot);
     const yAxisGroup = svg.append("g").call(yAxis);
     yAxisGroup.select(".domain").remove();
-  }, [data, dims?.height, dims?.width]);
+  }, [initialData, dims?.height, dims?.width]);
 
   return (
     <div ref={wrapperRef} className="wrapper">

@@ -2,4 +2,37 @@
   display: flex;
   font-weight: bold;
   justify-content: space-around;
+  padding: 1rem 0 1rem 0;
+  align-items: center;
+}
+
+button.toggle {
+  width: 7rem;
+  height: 2.5rem;
+  color: #fff;
+  padding: 0.5rem 1rem 0.5rem 1rem;
+  font-weight: 700;
+  border-radius: 0.25rem;
+  background-color: rgba(66, 153, 225, 1);
+  cursor: pointer;
+  text-transform: none;
+  box-sizing: border-box;
+  border: 0 solid #e2e8f0;
+}
+
+button.toggle:hover {
+  background-color: rgba(43, 108, 176, 1);
+}
+
+button.toggle:focus {
+  outline: 5px auto -webkit-focus-ring-color;
+}
+
+input[type="checkbox"] {
+  cursor: pointer;
+  margin-right: 0.5rem;
+}
+.checkbox {
+  cursor: pointer;
+  display: flex;
 }
