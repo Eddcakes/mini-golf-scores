@@ -1,4 +1,5 @@
-import { mapColors } from "../utils/svg";
+import { mapColors } from "../../utils/svg";
+import { Button } from "../Button";
 import "./Legend.css";
 
 interface LegendProps {
@@ -16,9 +17,12 @@ export const Legend = ({
 }: LegendProps) => {
   return (
     <div className="legend">
-      <button className="toggle" onClick={toggleShowingAll}>
-        {showing.length > 0 ? "Uncheck all" : "Check all"}
-      </button>
+      <Button
+        onClick={toggleShowingAll}
+        text={showing.length > 0 ? "Uncheck all" : "Check all"}
+        variant="primary"
+      />
+
       {data.map((d) => {
         return (
           <div key={d}>

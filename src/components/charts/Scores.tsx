@@ -7,11 +7,11 @@ import {
   axisLeft,
   ScaleLinear,
 } from "d3";
-import useResizeObserver from "../hooks/useResizeObserver";
+import useResizeObserver from "../../hooks/useResizeObserver";
 import "./Scores.css";
-import { IScore } from "../models/data";
-import { formatTooltipText, splitIntoDatasets } from "../utils/data";
-import { mapColors } from "../utils/svg";
+import { IScore } from "../../models/data";
+import { formatTooltipText, splitIntoDatasets } from "../../utils/data";
+import { mapColors } from "../../utils/svg";
 import { Tooltip } from "./Tooltip";
 
 type XScale = ScaleLinear<number, number>;
@@ -38,7 +38,6 @@ export function Scores({ initialData, cumulative = false }: ScoresProps) {
   } else {
     data = initialData;
   }
-  console.log(data);
   const datasets = splitIntoDatasets(data, false);
   useEffect(() => {
     const svg = select(svgRef.current);
@@ -90,19 +89,13 @@ export function Scores({ initialData, cumulative = false }: ScoresProps) {
 
         .on("mouseover", (event) => {
           // Filter dataset points with the same coordinates
-          // this might need editing to work with cumulative
           const sameCoordinatesData = data.filter((record) => {
             const targetData = event.target.__data__;
-            // target data is fine
-            // but record data is not cumulative
-            console.log(record.score);
-            console.log(event.target.__data__);
             return (
               record.hole === targetData.hole &&
               record.score === targetData.score
             );
           });
-          console.log(sameCoordinatesData);
           // Extract names from the filtered dataset
           const tooltipContent = sameCoordinatesData
             .map((record) => formatTooltipText(record))
@@ -147,16 +140,16 @@ export function Scores({ initialData, cumulative = false }: ScoresProps) {
       // .attr("transform", `translateY(${dims.height}px)`)
       .call(xAxis);
 
-    xAxisGroup.select(".domain").remove(); //hide the connecting line
+    // xAxisGroup.select(".domain").remove(); //hide the connecting line
 
     const yAxis = axisLeft(yScale).ticks(cumulative ? 10 : maxShot);
     const yAxisGroup = svg.append("g").call(yAxis);
-    yAxisGroup.select(".domain").remove();
+    // yAxisGroup.select(".domain").remove();
   }, [initialData, dims?.height, dims?.width]);
 
   return (
     <div ref={wrapperRef} className="wrapper">
-      <svg ref={svgRef}></svg>
+      <svg ref={svgRef} className="line-chart"></svg>
       <Tooltip />
     </div>
   );

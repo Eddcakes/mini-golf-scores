@@ -1,7 +1,8 @@
 import { useState } from "react";
-import { Legend } from "./components/Legend";
-import { Scores } from "./components/Scores";
+import { Legend } from "./components/charts/Legend";
+import { Scores } from "./components/charts/Scores";
 import golfData from "./assets/data.json";
+import { Header } from "./components/Header";
 
 const testData = [
   { name: "MG", hole: 1, score: 2 },
@@ -46,7 +47,7 @@ function App() {
 
   return (
     <div>
-      <header>header</header>
+      <Header />
       <main>
         <Legend
           data={legendData}
