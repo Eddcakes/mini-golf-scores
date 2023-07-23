@@ -15,6 +15,7 @@ button.button {
 
 button.button:hover {
   background-color: var(--primary-colour-dark);
+  box-shadow: 0px 5px 15px 5px rgba(245, 206, 200, 1);
 }
 
 button.button:focus {
@@ -29,6 +30,6 @@ button.icon-button {
 }
 
 button.icon-button:hover {
-  background-color: inherit;
-  border: solid 2px var(--primary-colour-dark);
+  background-color: rgb(255, 167, 138);
+  box-shadow: unset;
 }

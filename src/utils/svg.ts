@@ -7,3 +7,7 @@ export const mapColors = [
   { name: "EDD", color: "#00CC99" },
   { name: "PAUL", color: "#C8963E" },
 ];
+
+export const colorDictionary = Object.fromEntries(
+  mapColors.map((person) => [[person.name], person.color])
+);

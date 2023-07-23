@@ -4,6 +4,7 @@ svg.line-chart {
   width: 100%;
   overflow: visible;
   margin-bottom: 2rem;
+  height: 30rem;
 }
 
 .wrapper {
