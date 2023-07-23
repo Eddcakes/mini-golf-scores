@@ -1,8 +1,10 @@
-import { useState } from "react";
+import { useRef, useState } from "react";
 import { Legend } from "./components/charts/Legend";
-import { Scores } from "./components/charts/Scores";
 import golfData from "./assets/data.json";
 import { Header } from "./components/Header";
+import useResizeObserver from "./hooks/useResizeObserver";
+import { LineChart } from "./components/charts/LineChart";
+import { Tooltip } from "./components/charts/Tooltip";
 
 const testData = [
   { name: "MG", hole: 1, score: 2 },
@@ -17,6 +19,9 @@ const testData = [
 ];
 
 function App() {
+  const wrapperRef = useRef<HTMLDivElement>(null);
+  const { height, width } = useResizeObserver(wrapperRef);
+
   const data = golfData;
   const legendData = [...new Set(data.map((data) => data.name))];
   const [showing, setShowing] = useState<string[]>(legendData);
@@ -55,7 +60,15 @@ function App() {
           showing={showing}
           toggleShowingAll={toggleShowingAll}
         />
-        <Scores initialData={chartData} cumulative={cumulative} />
+        <div ref={wrapperRef} className="wrapper">
+          <LineChart
+            initialData={chartData}
+            cumulative={cumulative}
+            height={height}
+            width={width}
+          />
+          <Tooltip />
+        </div>
       </main>
       <footer>
         <label className="checkbox">
