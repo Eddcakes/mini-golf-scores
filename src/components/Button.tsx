@@ -23,7 +23,7 @@ interface IconButtonProps {
 
 export const IconButton = ({ icon, onClick, label }: IconButtonProps) => {
   return (
-    <button className="button icon-button" aria-label={label}>
+    <button className="button icon-button" aria-label={label} onClick={onClick}>
       {icon}
     </button>
   );

@@ -1,4 +1,3 @@
-import { useState } from "react";
 import { IScore } from "../../models/data";
 import { splitIntoDatasets } from "../../utils/data";
 import { getXScale, getYScale } from "../../utils/charts";
@@ -28,11 +27,10 @@ export function LineChart({
   const maxShot = cumulative ? 100 : 10; // max<IScore, number>(data, (d) => d.score); //could + however many
   const xScale = getXScale(minHole, maxHole, width);
   const yScale = getYScale(minShot, maxShot, height);
-  const [prevItems, setPrevItems] = useState<string[]>([]);
 
   let data: IScore[] = [];
   if (cumulative) {
-    let cumulativeScoreMap: Record<string, number> = {};
+    const cumulativeScoreMap: Record<string, number> = {};
     const cumulativeData = initialData.map((d) => {
       const { name, score } = d;
       cumulativeScoreMap[name] = (cumulativeScoreMap[name] || 0) + score;

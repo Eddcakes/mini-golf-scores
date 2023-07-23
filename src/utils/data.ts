@@ -1,11 +1,11 @@
 import { IDataset, IScore } from "../models/data";
 
 export function splitIntoDatasets(data: IScore[]) {
-  let sets: IDataset[] = [];
-  let hitKey: string[] = [];
+  const sets: IDataset[] = [];
+  const hitKey: string[] = [];
   data.forEach((d) => {
     if (hitKey.includes(d.name)) {
-      let found = sets.find((e) => e.label === d.name);
+      const found = sets.find((e) => e.label === d.name);
       if (!found) return;
       found?.data.push(d);
     } else {

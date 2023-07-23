@@ -25,14 +25,14 @@ export function GridLine({
     const gridGroup = select(gRef.current);
 
     if (disableAnimation) {
-      // fix any
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       gridGroup.call(axis as any);
     } else {
-      // fix any
       gridGroup
         .transition()
         .duration(750)
         .ease(easeLinear)
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
         .call(axis as any);
     }
     gridGroup.select(".domain").remove();
@@ -55,15 +55,14 @@ export function Axis({
     const axis = axisGenerator(scale).ticks(ticks);
     const axisGroup = select(gRef.current);
     if (disableAnimation) {
-      // fix any
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       axisGroup.call(axis as any);
     } else {
-      // fix any
       axisGroup
         .transition()
         .duration(750)
         .ease(easeLinear)
-        //.attr("x", 0)
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
         .call(axis as any);
     }
     // axisGroup.select(".domain").remove();

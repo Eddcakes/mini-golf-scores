@@ -6,6 +6,7 @@ import useResizeObserver from "./hooks/useResizeObserver";
 import { LineChart } from "./components/charts/LineChart";
 import { Tooltip } from "./components/charts/Tooltip";
 
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 const testData = [
   { name: "MG", hole: 1, score: 2 },
   { name: "MG", hole: 2, score: 6 },
