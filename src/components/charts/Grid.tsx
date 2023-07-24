@@ -1,8 +1,15 @@
 import { useEffect, useRef } from "react";
-import { axisBottom, axisLeft, easeLinear, select } from "d3";
+import {
+  axisBottom,
+  axisLeft,
+  bisector,
+  easeLinear,
+  pointer,
+  select,
+} from "d3";
 import { XScale, YScale } from "../../utils/charts";
 
-interface AxisProps {
+interface GridLineProps {
   axisType: "x" | "y";
   scale: XScale | YScale;
   ticks: number;
@@ -16,7 +23,7 @@ export function GridLine({
   ticks,
   transform,
   disableAnimation,
-}: AxisProps) {
+}: GridLineProps) {
   const gRef = useRef<SVGGElement>(null);
   useEffect(() => {
     const axisGenerator = axisType === "x" ? axisBottom : axisLeft;
@@ -42,12 +49,22 @@ export function GridLine({
   return <g ref={gRef} transform={transform}></g>;
 }
 
+interface AxisProps {
+  axisType: "x" | "y";
+  scale: XScale | YScale;
+  ticks: number;
+  transform: string;
+  disableAnimation: boolean;
+  anchorEl?: SVGRectElement | null;
+}
+
 export function Axis({
   axisType,
   scale,
   ticks,
   transform,
   disableAnimation,
+  anchorEl,
 }: AxisProps) {
   const gRef = useRef<SVGGElement>(null);
   useEffect(() => {
@@ -67,11 +84,32 @@ export function Axis({
     }
     // axisGroup.select(".domain").remove();
     // axisGroup.selectAll("line").remove();
-    /*     axisGroup
+    axisGroup
       .selectAll("text")
       .attr("opacity", 0.5)
-      .attr("color", "white")
-      .attr("font-size", "0.75rem"); */
+      .attr("font-size", "0.75rem");
   }, [scale, ticks, disableAnimation]);
+
+  useEffect(() => {
+    if (!anchorEl) return;
+    select(anchorEl)
+      .on("mouseout.axisX", () => {
+        select(gRef.current)
+          .selectAll("text")
+          .attr("opacity", 0.5)
+          .style("font-weight", "normal");
+      })
+      .on("mousemove.axisX", (event) => {
+        const [x] = pointer(event);
+        const xHole = scale.invert(x);
+        const textElements = select(gRef.current).selectAll("text");
+        const data = textElements.data();
+        const index = bisector((d) => d).center(data, xHole);
+        textElements
+          .attr("opacity", (d, i) => (i === index ? 1 : 0.5))
+          .style("font-weight", (d, i) => (i === index ? "bold" : "normal"));
+      });
+  }, [anchorEl, scale]);
+
   return <g ref={gRef} transform={transform}></g>;
 }

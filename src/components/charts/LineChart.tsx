@@ -1,9 +1,12 @@
+import { useRef } from "react";
 import { IScore } from "../../models/data";
 import { splitIntoDatasets } from "../../utils/data";
 import { getXScale, getYScale } from "../../utils/charts";
 import { Axis } from "./Grid";
 import { AnimationType, Line } from "./Line";
 import { colorDictionary } from "../../utils/svg";
+import { Overlay } from "./Overlay";
+import { Tooltip } from "./Tooltip";
 import "./LineChart.css";
 
 interface LineChartProps {
@@ -19,6 +22,7 @@ export function LineChart({
   width,
   height,
 }: LineChartProps) {
+  const overlayRef = useRef<SVGRectElement>(null);
   const svgWidth = width;
   const svgHeight = height;
   const minHole = 1;
@@ -58,22 +62,34 @@ export function LineChart({
             />
           );
         })}
-        <Axis
-          axisType="x"
-          scale={xScale}
-          ticks={maxHole}
-          disableAnimation={false}
-          // why doesn't this work
-          // .attr("transform", `translateY(${dims.height}px)`)
-          transform={`translate(0, ${height})`}
-        />
+
         <Axis
           axisType="y"
           scale={yScale}
-          ticks={cumulative ? 10 : maxShot}
+          ticks={(cumulative ? 10 : maxShot) / 2}
           disableAnimation={false}
           transform=""
         />
+        <Overlay ref={overlayRef} width={width} height={height}>
+          <Axis
+            axisType="x"
+            scale={xScale}
+            ticks={maxHole / 2}
+            disableAnimation={false}
+            // why doesn't this work
+            // .attr("transform", `translateY(${dims.height}px)`)
+            transform={`translate(0, ${height})`}
+            anchorEl={overlayRef.current}
+          />
+          <Tooltip
+            anchorEl={overlayRef.current}
+            data={datasets}
+            height={height}
+            width={width}
+            xScale={xScale}
+            yScale={yScale}
+          />
+        </Overlay>
       </svg>
     </>
   );

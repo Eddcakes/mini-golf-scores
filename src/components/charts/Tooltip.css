@@ -1,14 +1,8 @@
-.tooltip {
-  position: absolute;
-  z-index: 10;
-  display: inline-block;
-  background-color: black;
-  padding: 10px;
-  border-width: 2px;
-  border-color: white;
-  font-family: "Robot Mono", sans-serif;
-  color: whitesmoke;
-  padding: 1rem;
-  z-index: 100;
-  visibility: hidden;
+.tooltip-line {
+  stroke: var(--primary-colour);
+  stroke-width: 1;
+}
+
+.tooltip-point {
+  fill: var(--primary-colour);
 }

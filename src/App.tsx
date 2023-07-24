@@ -4,7 +4,6 @@ import golfData from "./assets/data.json";
 import { Header } from "./components/Header";
 import useResizeObserver from "./hooks/useResizeObserver";
 import { LineChart } from "./components/charts/LineChart";
-import { Tooltip } from "./components/charts/Tooltip";
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 const testData = [
@@ -23,7 +22,7 @@ function App() {
   const wrapperRef = useRef<HTMLDivElement>(null);
   const { height, width } = useResizeObserver(wrapperRef);
 
-  const data = golfData;
+  const data = golfData; // testData;
   const legendData = [...new Set(data.map((data) => data.name))];
   const [showing, setShowing] = useState<string[]>(legendData);
   const onChangeShowing = (name: string) => {
@@ -68,7 +67,6 @@ function App() {
             height={height}
             width={width}
           />
-          <Tooltip />
         </div>
       </main>
       <footer>
