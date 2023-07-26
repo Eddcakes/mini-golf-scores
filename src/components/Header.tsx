@@ -9,6 +9,7 @@ export const Header = () => (
       <IconButton
         label="dark mode"
         icon={<Moon />}
+        variant="transparent"
         onClick={() => {
           console.log("swap theme");
         }}

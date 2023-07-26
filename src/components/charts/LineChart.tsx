@@ -48,49 +48,47 @@ export function LineChart({
   const datasets = splitIntoDatasets(data);
 
   return (
-    <>
-      <svg className="line-chart" height={svgHeight} width={svgWidth}>
-        {datasets.map(({ label, data }) => {
-          return (
-            <Line
-              key={label}
-              data={data}
-              xScale={xScale}
-              yScale={yScale}
-              color={colorDictionary[label] || "black"}
-              animation={AnimationType.LEFT}
-            />
-          );
-        })}
-
-        <Axis
-          axisType="y"
-          scale={yScale}
-          ticks={(cumulative ? 10 : maxShot) / 2}
-          disableAnimation={false}
-          transform=""
-        />
-        <Overlay ref={overlayRef} width={width} height={height}>
-          <Axis
-            axisType="x"
-            scale={xScale}
-            ticks={maxHole / 2}
-            disableAnimation={false}
-            // why doesn't this work
-            // .attr("transform", `translateY(${dims.height}px)`)
-            transform={`translate(0, ${height})`}
-            anchorEl={overlayRef.current}
-          />
-          <Tooltip
-            anchorEl={overlayRef.current}
-            data={datasets}
-            height={height}
-            width={width}
+    <svg className="line-chart" height={svgHeight} width={svgWidth}>
+      {datasets.map(({ label, data }) => {
+        return (
+          <Line
+            key={label}
+            data={data}
             xScale={xScale}
             yScale={yScale}
+            color={colorDictionary[label] || "black"}
+            animation={AnimationType.LEFT}
           />
-        </Overlay>
-      </svg>
-    </>
+        );
+      })}
+
+      <Axis
+        axisType="y"
+        scale={yScale}
+        ticks={(cumulative ? 10 : maxShot) / 2}
+        disableAnimation={false}
+        transform=""
+      />
+      <Overlay ref={overlayRef} width={width} height={height}>
+        <Axis
+          axisType="x"
+          scale={xScale}
+          ticks={maxHole / 2}
+          disableAnimation={false}
+          // why doesn't this work
+          // .attr("transform", `translateY(${dims.height}px)`)
+          transform={`translate(0, ${height})`}
+          anchorEl={overlayRef.current}
+        />
+        <Tooltip
+          anchorEl={overlayRef.current}
+          data={datasets}
+          height={height}
+          width={width}
+          xScale={xScale}
+          yScale={yScale}
+        />
+      </Overlay>
+    </svg>
   );
 }

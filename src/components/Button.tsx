@@ -19,11 +19,21 @@ interface IconButtonProps {
   icon: ReactNode;
   onClick: () => void;
   label: string;
+  variant: "primary" | "secondary" | "transparent";
 }
 
-export const IconButton = ({ icon, onClick, label }: IconButtonProps) => {
+export const IconButton = ({
+  icon,
+  onClick,
+  label,
+  variant,
+}: IconButtonProps) => {
   return (
-    <button className="button icon-button" aria-label={label} onClick={onClick}>
+    <button
+      className={`button icon-button ${variant}`}
+      aria-label={label}
+      onClick={onClick}
+    >
       {icon}
     </button>
   );

@@ -1,5 +1,5 @@
 svg.line-chart {
-  background-color: #eeeeee;
+  background-color: var(--accent-colour);
   display: block;
   width: 100%;
   overflow: visible;

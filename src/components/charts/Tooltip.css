@@ -6,3 +6,7 @@
 .tooltip-point {
   fill: var(--primary-colour);
 }
+
+.content-title {
+  font-weight: 600;
+}

@@ -50,6 +50,7 @@ export function Tooltip({
       tooltipContent
         .select(".content-title")
         .text(`Hole: ${Math.round(xScale.invert(x))}`);
+      // attr and set translate to centralise the title?
     },
     [xScale, width]
   );
@@ -155,8 +156,8 @@ export function Tooltip({
       <line className="tooltip-line" />
       <g className="tooltip-content">
         <rect className="content-background" rx={4} ry={4} opacity={0.2} />
-        <text className="content-title" transform={"translate(4, 14)"} />
-        <g className="content" transform="translate(4, 32)">
+        <text className="content-title" transform={"translate(4, 22)"} />
+        <g className="content" transform="translate(4, 42)">
           {data.map(({ label }, i) => {
             return (
               <g key={label} transform={`translate(6,${22 * i})`}>

@@ -4,6 +4,7 @@ import golfData from "./assets/data.json";
 import { Header } from "./components/Header";
 import useResizeObserver from "./hooks/useResizeObserver";
 import { LineChart } from "./components/charts/LineChart";
+import { Settings } from "./components/charts/Settings";
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 const testData = [
@@ -67,7 +68,13 @@ function App() {
             height={height}
             width={width}
           />
+          <Settings
+            wrapperRef={wrapperRef.current}
+            height={height}
+            width={width}
+          />
         </div>
+        <div id="portal-root"></div>
       </main>
       <footer>
         <label className="checkbox">
