@@ -1,12 +1,11 @@
 svg.line-chart {
   background-color: var(--accent-colour);
   display: block;
-  width: 100%;
-  overflow: visible;
-  margin-bottom: 2rem;
   height: 30rem;
 }
 
-.wrapper {
-  width: 100%;
+.y-axis {
+  overflow: visible;
+  position: absolute;
+  pointer-events: none;
 }

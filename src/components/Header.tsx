@@ -1,6 +1,7 @@
 import { IconButton } from "./Button";
-import "./Header.css";
 import { Moon } from "./icons";
+import "./Header.css";
+
 export const Header = () => (
   <header className="header">
     <div>home</div>

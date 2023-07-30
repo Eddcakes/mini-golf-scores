@@ -1,9 +1,9 @@
 import { useCallback, useEffect, useRef } from "react";
+import { bisector, max, pointer, select, selectAll } from "d3";
 import { IDataset, IScore } from "../../models/data";
 import { XScale, YScale } from "../../utils/charts";
-import "./Tooltip.css";
-import { bisector, max, pointer, select, selectAll } from "d3";
 import { colorDictionary } from "../../utils/svg";
+import "./Tooltip.css";
 
 interface TooltipProps {
   xScale: XScale;
@@ -37,20 +37,22 @@ export function Tooltip({
   );
 
   const drawContent = useCallback(
-    (x: number) => {
+    (x: number, pointerPosX: number) => {
       const tooltipContent = select(tooltipRef.current).select(
         ".tooltip-content"
       );
       tooltipContent.attr("transform", (cur, i, nodes) => {
         const theNodes = nodes as SVGElement[];
-        const nodesWidth = theNodes[i]?.getBoundingClientRect()?.width || 0;
-        const translateX = nodesWidth + x > width ? x - nodesWidth - 12 : x + 8;
+        const tooltipWidth = theNodes[i]?.getBoundingClientRect()?.width || 0;
+        const translateX =
+          tooltipWidth + pointerPosX > width - 48
+            ? x - tooltipWidth - 12
+            : x + 8;
         return `translate(${translateX}, 0)`;
       });
       tooltipContent
         .select(".content-title")
         .text(`Hole: ${Math.round(xScale.invert(x))}`);
-      // attr and set translate to centralise the title?
     },
     [xScale, width]
   );
@@ -91,6 +93,8 @@ export function Tooltip({
 
   const followPoints = useCallback(
     (event: MouseEvent) => {
+      const pointerPositionX = event.clientX;
+      // x is position relative to svg
       const [x] = pointer(event);
       const xHole = xScale.invert(x);
       const bisect = bisector((d: IScore) => d.hole).left;
@@ -126,7 +130,8 @@ export function Tooltip({
             : "translate(-100, -100)";
         });
       drawLine(baseXPos);
-      drawContent(baseXPos);
+      // being lazy, if I want to use this I should store margin as a const or pass it through
+      drawContent(baseXPos, pointerPositionX - 48);
       drawBackground();
     },
     [anchorEl, data, drawLine, drawContent, drawBackground, xScale, yScale]
@@ -141,7 +146,6 @@ export function Tooltip({
         select(tooltipRef.current).attr("opacity", 1);
       })
       .on("mousemove.tooltip", (event) => {
-        // create the line
         select(tooltipRef.current)
           .selectAll(".tooltip-point")
           .attr("opacity", 1);

@@ -1,9 +1,3 @@
-.settings {
-  position: absolute;
-  top: 0;
-  right: 0;
-}
-
 #portal-root .backdrop {
   position: absolute;
   background-color: var(--overlay-alpha);

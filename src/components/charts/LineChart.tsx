@@ -23,14 +23,16 @@ export function LineChart({
   height,
 }: LineChartProps) {
   const overlayRef = useRef<SVGRectElement>(null);
-  const svgWidth = width;
+  const scrollBreakpoint = 770;
+  const margin = 48;
+  const svgWidth = width < scrollBreakpoint ? 1200 : width;
   const svgHeight = height;
   const minHole = 1;
   const maxHole = 18;
   const minShot = 0; // min<IScore, number>(data, (d) => d.score); //could -1
   const maxShot = cumulative ? 100 : 10; // max<IScore, number>(data, (d) => d.score); //could + however many
-  const xScale = getXScale(minHole, maxHole, width);
-  const yScale = getYScale(minShot, maxShot, height);
+  const xScale = getXScale(minHole, maxHole, svgWidth - margin);
+  const yScale = getYScale(minShot, maxShot, svgHeight - margin);
 
   let data: IScore[] = [];
   if (cumulative) {
@@ -48,47 +50,53 @@ export function LineChart({
   const datasets = splitIntoDatasets(data);
 
   return (
-    <svg className="line-chart" height={svgHeight} width={svgWidth}>
-      {datasets.map(({ label, data }) => {
-        return (
-          <Line
-            key={label}
-            data={data}
-            xScale={xScale}
-            yScale={yScale}
-            color={colorDictionary[label] || "black"}
-            animation={AnimationType.LEFT}
-          />
-        );
-      })}
-
-      <Axis
-        axisType="y"
-        scale={yScale}
-        ticks={(cumulative ? 10 : maxShot) / 2}
-        disableAnimation={false}
-        transform=""
-      />
-      <Overlay ref={overlayRef} width={width} height={height}>
+    <div>
+      <svg className="y-axis" height={svgHeight} width={100}>
         <Axis
-          axisType="x"
-          scale={xScale}
-          ticks={maxHole / 2}
+          axisType="y"
+          scale={yScale}
+          ticks={(cumulative ? 10 : maxShot) / 2}
           disableAnimation={false}
-          // why doesn't this work
-          // .attr("transform", `translateY(${dims.height}px)`)
-          transform={`translate(0, ${height})`}
-          anchorEl={overlayRef.current}
+          transform=""
         />
-        <Tooltip
-          anchorEl={overlayRef.current}
-          data={datasets}
-          height={height}
-          width={width}
-          xScale={xScale}
-          yScale={yScale}
-        />
-      </Overlay>
-    </svg>
+      </svg>
+      <div style={{ overflowX: "scroll" }}>
+        <svg className="line-chart" height={svgHeight} width={svgWidth}>
+          {datasets.map(({ label, data }) => {
+            return (
+              <Line
+                key={label}
+                data={data}
+                xScale={xScale}
+                yScale={yScale}
+                color={colorDictionary[label] || "black"}
+                animation={AnimationType.LEFT}
+              />
+            );
+          })}
+
+          <Overlay ref={overlayRef} width={svgWidth} height={svgHeight}>
+            <Axis
+              axisType="x"
+              scale={xScale}
+              ticks={maxHole}
+              disableAnimation={false}
+              // why doesn't this work
+              // .attr("transform", `translateY(${dims.height}px)`)
+              transform={`translate(0, ${svgHeight - margin})`}
+              anchorEl={overlayRef.current}
+            />
+            <Tooltip
+              anchorEl={overlayRef.current}
+              data={datasets}
+              height={svgHeight - margin}
+              width={width}
+              xScale={xScale}
+              yScale={yScale}
+            />
+          </Overlay>
+        </svg>
+      </div>
+    </div>
   );
 }
