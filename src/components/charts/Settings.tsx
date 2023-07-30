@@ -1,6 +1,6 @@
-import { KeyboardEvent, useEffect, useRef, useState } from "react";
-import { createPortal } from "react-dom";
-import { IconButton } from "../Button";
+import { useEffect, useState } from "react";
+import { Button, IconButton } from "../Button";
+import { Modal } from "../Modal";
 import { Cog } from "../icons";
 import "./Settings.css";
 
@@ -25,7 +25,6 @@ const emptyDomRect = {
 export function Settings({ wrapperRef, height, width }: SettingsRef) {
   const [isOpen, setIsOpen] = useState(false);
   const [position, setPosition] = useState<DOMRect>(emptyDomRect);
-  const portalRoot = document.querySelector("#portal-root");
 
   const handleClick = () => {
     if (!isOpen) {
@@ -55,7 +54,7 @@ export function Settings({ wrapperRef, height, width }: SettingsRef) {
     }
   }, [height, width]);
 
-  if (!portalRoot || !wrapperRef) return null;
+  if (!wrapperRef) return null;
   return (
     <div className="settings">
       <IconButton
@@ -64,76 +63,23 @@ export function Settings({ wrapperRef, height, width }: SettingsRef) {
         variant="transparent"
         onClick={handleClick}
       />
-      {createPortal(
-        <SettingsMenu
-          open={isOpen}
-          onClose={backdropClick}
-          position={position}
-        />,
-        portalRoot
-      )}
+      <Modal onClose={backdropClick} open={isOpen} position={position}>
+        <div className="settings-menu">
+          <h2>Settings</h2>
+          <label>
+            <input type="text" />
+            <span>holes</span>
+          </label>
+          <div>
+            <Button text="Cancel" onClick={handleClick} variant="secondary" />
+            <Button
+              text="Save"
+              onClick={() => console.log("save settings")}
+              variant="primary"
+            />
+          </div>
+        </div>
+      </Modal>
     </div>
   );
-}
-
-interface SettingsMenuProps {
-  open: boolean;
-  position: DOMRect;
-  onClose: () => void;
-}
-
-export function SettingsMenu({ open, position, onClose }: SettingsMenuProps) {
-  const backdropRef = useRef<HTMLDivElement>(null);
-  const escToClose = (event: KeyboardEvent) => {
-    if (event.key === "Escape") {
-      onClose();
-    }
-  };
-  useEffect(() => {
-    if (open) {
-      backdropRef.current?.focus();
-    }
-  }, [open]);
-  if (!open) return null;
-  return (
-    <>
-      <div
-        className="menu"
-        style={{
-          top: position.top + 5,
-          left: positionMenuCenter(position),
-        }}
-      >
-        <h2>Settings</h2>
-        <label>
-          <input type="text" />
-          <span>holes</span>
-        </label>
-      </div>
-      <div
-        className="backdrop"
-        style={{
-          top: position.top,
-          left: position.left,
-          height: position.height,
-          width: position.width + 1,
-        }}
-        onClick={onClose}
-        onKeyUp={escToClose}
-        role="button"
-        tabIndex={0}
-        ref={backdropRef}
-      ></div>
-    </>
-  );
-}
-
-function positionMenuCenter(position: DOMRect) {
-  // we were lazy and set width to 20rem, so we need to convert that to px
-  const size = 20 * 16;
-  // take the width of our element and take away the size of our menu
-  // divide that by 2 to get the center of the element
-  const placement = (position.width - size) / 2;
-  // remember to add the left position of the element
-  return position.left + placement;
 }

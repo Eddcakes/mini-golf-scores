@@ -4,25 +4,6 @@
   right: 0;
 }
 
-#portal-root .backdrop {
-  position: absolute;
-  background-color: var(--overlay-alpha);
-  z-index: 2;
-}
-
-#portal-root .menu {
-  position: absolute;
-  padding: 1rem;
-  background-color: whitesmoke;
-  box-shadow: 0px 5px 15px 5px rgba(0, 0, 0, 0.08);
-  z-index: 5;
-  width: 20rem;
-}
-
-.menu h2 {
+.settings-menu h2 {
   margin: 0;
-}
-
-.backdrop .menu {
-  pointer-events: none;
 }
