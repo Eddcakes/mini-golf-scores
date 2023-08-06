@@ -1,5 +1,6 @@
 import { Route } from "@tanstack/router";
 import { rootRoute } from "./index";
+import { ChartWrapper } from "../components/charts/Wrapper";
 
 export const aboutRoute = new Route({
   getParentRoute: () => rootRoute,
@@ -8,5 +9,5 @@ export const aboutRoute = new Route({
 });
 
 function About() {
-  return <div>Hello from About!</div>;
+  return <ChartWrapper />;
 }

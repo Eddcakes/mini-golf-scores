@@ -1,6 +1,9 @@
-import { Outlet, Link, Router, RootRoute } from "@tanstack/router";
+import { Outlet, Router, RootRoute } from "@tanstack/router";
 import { aboutRoute } from "./About";
 import { homeRoute } from "./Home";
+import { useState } from "react";
+import { Header } from "../components/Header";
+import { ThemeContext, ThemeType, defaultTheme } from "../context/Theme";
 
 // Create a root route
 export const rootRoute = new RootRoute({
@@ -8,14 +11,22 @@ export const rootRoute = new RootRoute({
 });
 
 function Root() {
+  const [theme, setTheme] = useState<ThemeType>(defaultTheme());
+  const toggleTheme = () => {
+    const newTheme = theme === "dark" ? "regular" : "dark";
+    localStorage.setItem("mg:theme", newTheme);
+    setTheme(newTheme);
+  };
   return (
-    <>
-      <div>
-        <Link to="/">Home</Link> <Link to="/about">About</Link>
+    <ThemeContext.Provider value={{ theme, toggleTheme }}>
+      <div id="app" data-theme={theme}>
+        <Header />
+        <main>
+          <Outlet />
+        </main>
+        <footer></footer>
       </div>
-      <hr />
-      <Outlet />
-    </>
+    </ThemeContext.Provider>
   );
 }
 

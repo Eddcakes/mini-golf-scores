@@ -1,6 +1,5 @@
 import { Route } from "@tanstack/router";
 import { rootRoute } from ".";
-import App from "../App";
 
 // Create an index route
 export const homeRoute = new Route({
@@ -10,5 +9,5 @@ export const homeRoute = new Route({
 });
 
 function Home() {
-  return <App />;
+  return <div>Home</div>;
 }
