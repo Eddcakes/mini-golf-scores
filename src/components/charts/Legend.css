@@ -15,3 +15,7 @@ input[type="checkbox"] {
   cursor: pointer;
   display: flex;
 }
+
+label.checkbox {
+  color: var(--main-text-colour);
+}

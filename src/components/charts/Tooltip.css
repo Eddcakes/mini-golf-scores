@@ -10,3 +10,8 @@
 .content-title {
   font-weight: 600;
 }
+
+.tooltip-content {
+  fill: currentColor;
+  color: var(--main-text-colour);
+}

@@ -19,10 +19,30 @@ const testData = [
   { name: "PAUL", hole: 3, score: 4 },
 ];
 
+const DEFAULT_THEME = "regular";
+
+const defaultTheme = () => {
+  if (localStorage.getItem("mg:theme")) {
+    return localStorage.getItem("mg:theme");
+  }
+  if (
+    window.matchMedia &&
+    window.matchMedia("(prefers-color-scheme: dark)").matches
+  ) {
+    return "dark";
+  }
+  return DEFAULT_THEME;
+};
+
 function App() {
   const wrapperRef = useRef<HTMLDivElement>(null);
   const { height, width } = useResizeObserver(wrapperRef);
-
+  const [theme, setTheme] = useState(defaultTheme);
+  const toggleTheme = () => {
+    const newTheme = theme === "dark" ? "regular" : "dark";
+    localStorage.setItem("mg:theme", newTheme);
+    setTheme(newTheme);
+  };
   const data = golfData; // testData;
   const legendData = [...new Set(data.map((data) => data.name))];
   const [showing, setShowing] = useState<string[]>(legendData);
@@ -52,8 +72,8 @@ function App() {
   const chartData = data.filter((d) => showing.includes(d.name));
 
   return (
-    <div>
-      <Header />
+    <div id="app" data-theme={theme}>
+      <Header toggleTheme={toggleTheme} />
       <main>
         <Legend
           data={legendData}

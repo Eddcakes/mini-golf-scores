@@ -8,6 +8,7 @@ import {
   select,
 } from "d3";
 import { XScale, YScale } from "../../utils/charts";
+import "./Grid.css";
 
 interface GridLineProps {
   axisType: "x" | "y";
@@ -111,5 +112,5 @@ export function Axis({
       });
   }, [anchorEl, scale]);
 
-  return <g ref={gRef} transform={transform}></g>;
+  return <g className="axis" ref={gRef} transform={transform}></g>;
 }

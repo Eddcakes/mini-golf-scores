@@ -2,7 +2,11 @@ import { IconButton } from "./Button";
 import { Moon } from "./icons";
 import "./Header.css";
 
-export const Header = () => (
+interface HeaderProps {
+  toggleTheme: () => void;
+}
+
+export const Header = ({ toggleTheme }: HeaderProps) => (
   <header className="header">
     <div>home</div>
     <div>something something darkslide</div>
@@ -11,9 +15,7 @@ export const Header = () => (
         label="dark mode"
         icon={<Moon />}
         variant="transparent"
-        onClick={() => {
-          console.log("swap theme");
-        }}
+        onClick={toggleTheme}
       />
     </div>
   </header>
