@@ -1,7 +1,5 @@
 import "./index.css";
 
-/* https://github.com/tailwindlabs/heroicons */
-
 export const Moon = () => {
   return (
     <svg
