@@ -1,0 +1,21 @@
+.legend {
+  display: flex;
+  font-weight: bold;
+  justify-content: space-around;
+  padding: 1rem 0 1rem 0;
+  align-items: center;
+  flex-wrap: wrap;
+}
+
+input[type="checkbox"] {
+  cursor: pointer;
+  margin-right: 0.5rem;
+}
+.checkbox {
+  cursor: pointer;
+  display: flex;
+}
+
+label.checkbox {
+  color: var(--main-text-colour);
+}

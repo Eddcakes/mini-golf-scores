@@ -1,0 +1,52 @@
+button.button {
+  /* remove height and width sort it some other way */
+  width: 7rem;
+  height: 2.5rem;
+  padding: 0.5rem 1rem 0.5rem 1rem;
+  font-weight: 700;
+  border-radius: 0.25rem;
+  cursor: pointer;
+  text-transform: none;
+  box-sizing: border-box;
+  border: 0 solid #e2e8f0;
+}
+
+button.button:focus {
+  outline: 5px auto -webkit-focus-ring-color;
+}
+
+button.icon-button {
+  width: 2.5rem;
+  height: 2.5rem;
+  padding: 0;
+  background-color: inherit;
+}
+
+button.icon-button:hover {
+}
+
+/* variants */
+button.primary {
+  color: var(--white);
+  background-color: var(--primary-colour);
+}
+button.primary:hover {
+  background-color: var(--primary-colour-dark);
+  box-shadow: 0px 5px 15px 5px var(--primary-shadow);
+}
+button.primary:focus {
+}
+button.secondary {
+}
+button.secondary:hover {
+}
+button.secondary:focus {
+}
+button.transparent {
+  color: var(--white);
+}
+button.transparent:hover {
+  background-color: var(--white-alpha);
+}
+button.transparent:focus {
+}
