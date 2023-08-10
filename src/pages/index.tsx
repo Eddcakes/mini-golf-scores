@@ -4,6 +4,8 @@ import { homeRoute } from "./Home";
 import { useState } from "react";
 import { Header } from "../components/Header";
 import { ThemeContext, ThemeType, defaultTheme } from "../context/Theme";
+import { pragueRoute } from "./Prague";
+import { settingsRoute } from "./Settings";
 
 // Create a root route
 export const rootRoute = new RootRoute({
@@ -31,7 +33,12 @@ function Root() {
 }
 
 // Create the route tree using your routes
-const routeTree = rootRoute.addChildren([homeRoute, aboutRoute]);
+const routeTree = rootRoute.addChildren([
+  homeRoute,
+  aboutRoute,
+  pragueRoute,
+  settingsRoute,
+]);
 
 // Create the router using your route tree
 export const router = new Router({ routeTree });

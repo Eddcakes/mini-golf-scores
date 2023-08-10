@@ -11,7 +11,9 @@ export const Header = () => {
     <header className="header">
       <div>home</div>
       <div>
-        <Link to="/">Home</Link> <Link to="/about">About</Link>
+        <Link to="/">Home</Link>
+        <Link to="/about">About</Link>
+        <Link to="/prague">Prague</Link>
       </div>
       <div className="controls">
         <IconButton

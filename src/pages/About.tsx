@@ -1,6 +1,6 @@
 import { Route } from "@tanstack/router";
 import { rootRoute } from "./index";
-import { ChartWrapper } from "../components/charts/Wrapper";
+import { Link } from "../components/Link";
 
 export const aboutRoute = new Route({
   getParentRoute: () => rootRoute,
@@ -9,5 +9,13 @@ export const aboutRoute = new Route({
 });
 
 function About() {
-  return <ChartWrapper />;
+  return (
+    <div>
+      <div>
+        This site uses your browsers local storage, so your data will only be
+        available on this browser unless you{" "}
+        <Link to="/settings">settings</Link> your games
+      </div>
+    </div>
+  );
 }
