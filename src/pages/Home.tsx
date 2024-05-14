@@ -2,6 +2,9 @@ import { Route } from "@tanstack/router";
 import { rootRoute } from ".";
 import { FormEvent, useReducer } from "react";
 import "./Home.css";
+import useCheckForIdb from "../hooks/useCheckForIdb";
+import { createRecord } from "../utils/idb";
+import useCheckForIncompleteGames from "../hooks/useCheckForIncompleteGames";
 
 // Create an index route
 export const homeRoute = new Route({
@@ -31,9 +34,9 @@ function reducer(state: FormState, action: Action): FormState {
     case "setCurrentPlayer":
       return { ...state, currentPlayer: action.payload };
     case "setName":
-      return { ...state, location: action.payload };
+      return { ...state, name: action.payload };
     case "setDescription":
-      return { ...state, location: action.payload };
+      return { ...state, description: action.payload };
     case "setLocation":
       return { ...state, location: action.payload };
     case "setDate":
@@ -42,6 +45,8 @@ function reducer(state: FormState, action: Action): FormState {
       return { ...state, maxShots: parseInt(action.payload) };
     case "setHoles":
       return { ...state, holes: parseInt(action.payload) };
+    case "resetForm":
+      return { ...initialState };
     default:
       console.log("fall through");
       return { ...state };
@@ -56,7 +61,6 @@ const initialState = {
   maxShots: 10,
   currentPlayer: "",
   holes: 0,
-  complete: false,
 };
 
 interface FormState {
@@ -68,7 +72,6 @@ interface FormState {
   maxShots: number;
   currentPlayer: string;
   holes: number;
-  complete: boolean;
 }
 
 type InputAction =
@@ -83,6 +86,7 @@ type InputAction =
 type Action =
   | { type: "addPlayer"; payload: string }
   | { type: "removePlayer"; payload: string }
+  | { type: "resetForm"; payload: null }
   | InputAction;
 
 /* const useGameInProgress = () => {
@@ -92,6 +96,9 @@ type Action =
 function Home() {
   // new game
   // existing game should get existing state
+  const idbAvailable = useCheckForIdb();
+  const incompleteGames = useCheckForIncompleteGames();
+  // if incomplete games are found, create a modal to ask user if they want to continue
   const [formState, dispatch] = useReducer(reducer, initialState);
   const addPlayer = (
     event: FormEvent<HTMLButtonElement | HTMLInputElement>
@@ -103,16 +110,39 @@ function Home() {
     dispatch({ type: "setCurrentPlayer", payload: "" });
   };
 
-  const createGame = (event: FormEvent) => {
+  const createGame = async (event: FormEvent) => {
     event.preventDefault();
     // do some validation
-    console.log(formState);
+    if (formState.name === "") return;
+    const data = {
+      name: formState.name,
+      description: formState.description,
+      location: formState.location,
+      date: formState.date,
+      maxShots: formState.maxShots,
+      playerList: formState.players,
+    };
+
+    const createdGame = await createRecord(data);
+    if (createdGame.success) {
+      console.log("Game created:", createdGame.message);
+      resetForm();
+      // prob redirect not reset form
+    } else {
+      console.log("Failed to create game", createdGame.message);
+    }
     // save to local storage
+  };
+
+  const resetForm = () => {
+    dispatch({ type: "resetForm", payload: null });
   };
 
   return (
     <div>
       <h1>New Game</h1>
+      <span>{idbAvailable ? "IDB available" : "IDB not available"}</span>
+      <span>{incompleteGames.length}</span>
       <form onSubmit={createGame}>
         <label htmlFor="name">Event name</label>
         <input
@@ -122,6 +152,7 @@ function Home() {
           onChange={(evt) =>
             dispatch({ type: "setName", payload: evt.currentTarget.value })
           }
+          value={formState.name}
         />
         <label htmlFor="description">description</label>
         <input
@@ -134,6 +165,7 @@ function Home() {
               payload: evt.currentTarget.value,
             })
           }
+          value={formState.description}
         />
         <label htmlFor="location">Location</label>
         <input
@@ -143,6 +175,7 @@ function Home() {
           onChange={(evt) =>
             dispatch({ type: "setLocation", payload: evt.currentTarget.value })
           }
+          value={formState.location}
         />
         <input
           type="date"
@@ -151,6 +184,7 @@ function Home() {
           onChange={(evt) =>
             dispatch({ type: "setDate", payload: evt.currentTarget.value })
           }
+          value={formState.date}
         />
         <label htmlFor="maxShots">Max Shots</label>
         <span className="helperText">

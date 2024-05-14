@@ -1,8 +1,13 @@
 {
   "name": "Name of the event",
   "description": "Description of the event",
-  "start": "2017-01-01T00:00:00+00:00",
-  "end": "2017-01-01T00:00:00+00:00",
+  "location": "Location of the event",
+  "date": "2017-01-01T00:00:00+00:00",
+  "maxShots": 10,
+  "holes": 18,
   "complete": false,
-  "data": [{ "name": "edd", "hole": 1, "score": 3 }]
+  "playerList": ["edd"],
+  "data": [{ "name": "edd", "hole": 1, "score": 3 }],
+  "created": "2017-01-01T00:00:00+00:00",
+  "updated": "2017-01-01T00:00:00+00:00"
 }
