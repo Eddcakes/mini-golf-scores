@@ -13,8 +13,8 @@ function About() {
     <div>
       <div>
         This site uses your browsers local storage, so your data will only be
-        available on this browser unless you{" "}
-        <Link to="/settings">settings</Link> your games
+        available on this browser unless you <Link to="/settings">export</Link>{" "}
+        your games
       </div>
     </div>
   );

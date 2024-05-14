@@ -1,7 +1,7 @@
 import { Route } from "@tanstack/router";
 import { rootRoute } from ".";
-import { Link } from "../components/Link";
 import { FormEvent, useReducer } from "react";
+import "./Home.css";
 
 // Create an index route
 export const homeRoute = new Route({
@@ -28,16 +28,20 @@ function reducer(state: FormState, action: Action): FormState {
         ...state,
         players: state.players.filter((p) => p !== action.payload),
       };
-    case "currentPlayer":
+    case "setCurrentPlayer":
       return { ...state, currentPlayer: action.payload };
-    case "location":
+    case "setName":
       return { ...state, location: action.payload };
-    case "date":
+    case "setDescription":
+      return { ...state, location: action.payload };
+    case "setLocation":
+      return { ...state, location: action.payload };
+    case "setDate":
       return { ...state, date: action.payload };
-    case "maxShots":
-      return { ...state, maxShots: action.payload };
-    case "par":
-      return { ...state, par: action.payload };
+    case "setMaxShots":
+      return { ...state, maxShots: parseInt(action.payload) };
+    case "setHoles":
+      return { ...state, holes: parseInt(action.payload) };
     default:
       console.log("fall through");
       return { ...state };
@@ -45,95 +49,186 @@ function reducer(state: FormState, action: Action): FormState {
 }
 const initialState = {
   players: [],
+  name: "",
+  description: "",
   location: "",
   date: "",
-  maxShots: 0,
-  par: 0,
+  maxShots: 10,
   currentPlayer: "",
+  holes: 0,
+  complete: false,
 };
 
 interface FormState {
   players: string[];
+  name: string;
+  description: string;
   location: string;
   date: string;
   maxShots: number;
-  par: number;
   currentPlayer: string;
+  holes: number;
+  complete: boolean;
 }
+
+type InputAction =
+  | { type: "setCurrentPlayer"; payload: string }
+  | { type: "setName"; payload: string }
+  | { type: "setDescription"; payload: string }
+  | { type: "setLocation"; payload: string }
+  | { type: "setDate"; payload: string }
+  | { type: "setMaxShots"; payload: string }
+  | { type: "setHoles"; payload: string };
 
 type Action =
   | { type: "addPlayer"; payload: string }
   | { type: "removePlayer"; payload: string }
-  | { type: "currentPlayer"; payload: string }
-  | { type: "location"; payload: string }
-  | { type: "date"; payload: string }
-  | { type: "maxShots"; payload: number }
-  | { type: "par"; payload: number };
+  | InputAction;
+
+/* const useGameInProgress = () => {
+  // check local storage for game in progress
+}; */
 
 function Home() {
   // new game
   // existing game should get existing state
   const [formState, dispatch] = useReducer(reducer, initialState);
-  const updateInput = (e: FormEvent<HTMLInputElement>) => {
-    dispatch({ type: e.currentTarget.name, payload: e.currentTarget.value });
-  };
-  const addPlayer = () => {
+  const addPlayer = (
+    event: FormEvent<HTMLButtonElement | HTMLInputElement>
+  ) => {
+    event.preventDefault();
     if (formState.currentPlayer === "") return;
     // do some validation
     dispatch({ type: "addPlayer", payload: formState.currentPlayer });
-    dispatch({ type: "currentPlayer", payload: "" });
+    dispatch({ type: "setCurrentPlayer", payload: "" });
   };
+
+  const createGame = (event: FormEvent) => {
+    event.preventDefault();
+    // do some validation
+    console.log(formState);
+    // save to local storage
+  };
+
   return (
     <div>
       <h1>New Game</h1>
-      <form>
+      <form onSubmit={createGame}>
+        <label htmlFor="name">Event name</label>
+        <input
+          type="text"
+          id="name"
+          name="name"
+          onChange={(evt) =>
+            dispatch({ type: "setName", payload: evt.currentTarget.value })
+          }
+        />
+        <label htmlFor="description">description</label>
+        <input
+          type="text"
+          id="description"
+          name="description"
+          onChange={(evt) =>
+            dispatch({
+              type: "setDescription",
+              payload: evt.currentTarget.value,
+            })
+          }
+        />
         <label htmlFor="location">Location</label>
         <input
           type="text"
           id="location"
           name="location"
-          onChange={updateInput}
+          onChange={(evt) =>
+            dispatch({ type: "setLocation", payload: evt.currentTarget.value })
+          }
         />
-        <input type="date" id="date" name="date" onChange={updateInput} />
+        <input
+          type="date"
+          id="date"
+          name="date"
+          onChange={(evt) =>
+            dispatch({ type: "setDate", payload: evt.currentTarget.value })
+          }
+        />
         <label htmlFor="maxShots">Max Shots</label>
+        <span className="helperText">
+          We will stop counting after we hit this
+        </span>
         <input
           type="number"
           id="maxShots"
           name="maxShots"
-          onChange={updateInput}
+          value={formState.maxShots}
+          onChange={(evt) =>
+            dispatch({ type: "setMaxShots", payload: evt.currentTarget.value })
+          }
         />
-        <label htmlFor="par">Add par</label>
-        <input type="number" id="par" name="par" onChange={updateInput} />
-        <p>
-          {formState.players.map((player, index) => {
-            return <span key={player + index}>{player}</span>;
-          })}
-        </p>
-        <label htmlFor="currentPlayer">Add players</label>
+        <label htmlFor="holes">Holes</label>
+        <div className="row">
+          <button
+            type="button"
+            onClick={() => dispatch({ type: "setHoles", payload: "9" })}
+          >
+            9
+          </button>
+          <button
+            type="button"
+            onClick={() => dispatch({ type: "setHoles", payload: "18" })}
+          >
+            18
+          </button>
+        </div>
         <input
-          type="text"
-          id="currentPlayer"
-          name="currentPlayer"
-          onChange={updateInput}
+          type="number"
+          id="holes"
+          name="holes"
+          value={formState.holes}
+          onChange={(evt) =>
+            dispatch({ type: "setHoles", payload: evt.currentTarget.value })
+          }
         />
-        <button onClick={addPlayer}>Add</button>
+        {formState.players.map((player, index) => {
+          return (
+            <div className="row" key={player + index}>
+              <span>{player}</span>
+              <button
+                onClick={() =>
+                  dispatch({ type: "removePlayer", payload: player })
+                }
+              >
+                X
+              </button>
+            </div>
+          );
+        })}
+        <fieldset>
+          <label htmlFor="currentPlayer">Add players</label>
+          <input
+            type="text"
+            id="currentPlayer"
+            name="currentPlayer"
+            value={formState.currentPlayer}
+            onChange={(evt) =>
+              dispatch({
+                type: "setCurrentPlayer",
+                payload: evt.currentTarget.value,
+              })
+            }
+            onKeyDown={(evt) => {
+              if (evt.key === "Enter") {
+                addPlayer(evt);
+              }
+            }}
+          />
+          <button type="button" onClick={addPlayer}>
+            Add
+          </button>
+        </fieldset>
+        <button type="submit">Create Game</button>
       </form>
-      <Link to="/about" from="/">
-        About
-      </Link>
       <pre>{JSON.stringify(formState, null, 2)}</pre>
     </div>
   );
 }
-
-/* function NumberInput({ label, id, value, onChange }) {
-  return (
-    <div>
-      <label htmlFor={id}>{label}</label>
-      <input type="number" id={id} value={value} onChange={onChange} />
-      <button>+</button>
-      <button>-</button>
-    </div>
-  );
-} */
-/* component to add multiple players */
