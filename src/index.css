@@ -32,16 +32,15 @@
   --white-alpha: rgba(255, 255, 255, 0.08);
   --overlay-alpha: rgba(0, 0, 0, 0.5);
 }
-
+html,
 body,
 #root {
   margin: 0;
-  height: 100vh;
 }
 
 #app {
-  height: 100%;
   background-color: var(--main-background-colour);
+  height: 100%;
 }
 
 code {
