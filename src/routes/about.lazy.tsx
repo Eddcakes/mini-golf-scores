@@ -1,10 +1,7 @@
-import { Route } from "@tanstack/router";
-import { rootRoute } from "./index";
+import { createLazyFileRoute } from "@tanstack/react-router";
 import { Link } from "../components/Link";
 
-export const aboutRoute = new Route({
-  getParentRoute: () => rootRoute,
-  path: "/about",
+export const Route = createLazyFileRoute("/about")({
   component: About,
 });
 

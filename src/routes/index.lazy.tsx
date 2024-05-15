@@ -1,25 +1,36 @@
-import { Route } from "@tanstack/router";
-import { rootRoute } from ".";
 import { FormEvent, useReducer } from "react";
-import "./Home.css";
+import { createLazyFileRoute } from "@tanstack/react-router";
 import useCheckForIdb from "../hooks/useCheckForIdb";
 import { createRecord } from "../utils/idb";
 import useCheckForIncompleteGames from "../hooks/useCheckForIncompleteGames";
 
-// Create an index route
-export const homeRoute = new Route({
-  getParentRoute: () => rootRoute,
-  path: "/",
-  component: Home,
+import "./index.css";
+
+export const Route = createLazyFileRoute("/")({
+  component: Index,
 });
 
 /*
-  check for in progress game
-  if found, ask, want to go to current game > redirect
-  else home page, 
-  new game
-  last game
-  search
+// refactor into
+ - check for incomplete game
+ - if found, ask user if they want to continue
+ - if multiple found show modal/accordion with list
+ - if selected, redirect to game
+  - if not, continue with new game
+
+  - new game page
+  - edit (existing) game page
+
+  - be able to complete games
+  __ feature complete
+  next feature
+  - search?
+  ^ new page for recent/search games?
+  - export data to file?
+  - import data from file?
+  __
+  - add styling library
+  - update deps
 */
 
 function reducer(state: FormState, action: Action): FormState {
@@ -89,11 +100,7 @@ type Action =
   | { type: "resetForm"; payload: null }
   | InputAction;
 
-/* const useGameInProgress = () => {
-  // check local storage for game in progress
-}; */
-
-function Home() {
+function Index() {
   // new game
   // existing game should get existing state
   const idbAvailable = useCheckForIdb();

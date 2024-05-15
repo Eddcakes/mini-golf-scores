@@ -1,5 +1,5 @@
 import { useContext } from "react";
-import { Link } from "@tanstack/router";
+import { Link } from "@tanstack/react-router";
 import { IconButton } from "./Button";
 import { Moon, Sun } from "./icons";
 import { ThemeContext } from "../context/Theme";
