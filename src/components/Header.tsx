@@ -1,12 +1,19 @@
 import { useContext } from "react";
 import { Link } from "@tanstack/react-router";
-import { IconButton } from "./Button";
+import { IconButton, useColorMode } from "@chakra-ui/react";
 import { Moon, Sun } from "./icons";
 import { ThemeContext } from "../context/Theme";
 import "./Header.css";
 
 export const Header = () => {
   const { theme, toggleTheme } = useContext(ThemeContext);
+  const { colorMode, toggleColorMode } = useColorMode();
+  // temporary until everything is chakra components
+  const toggleBothThemes = () => {
+    toggleTheme();
+    toggleColorMode();
+    console.log(`custom theme: ${theme}, chakra theme: ${colorMode}`);
+  };
   return (
     <header className="header">
       <div>home</div>
@@ -17,10 +24,12 @@ export const Header = () => {
       </div>
       <div className="controls">
         <IconButton
-          label="dark mode"
+          aria-label={
+            theme === "dark" ? "Switch to light mode" : "Switch to dark mode"
+          }
           icon={theme === "dark" ? <Sun /> : <Moon />}
           variant="transparent"
-          onClick={toggleTheme}
+          onClick={toggleBothThemes}
         />
       </div>
     </header>
