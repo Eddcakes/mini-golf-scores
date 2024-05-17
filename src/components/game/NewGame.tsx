@@ -1,4 +1,27 @@
 import { FormEvent, useReducer } from "react";
+import {
+  Accordion,
+  AccordionButton,
+  AccordionIcon,
+  AccordionItem,
+  AccordionPanel,
+  Box,
+  Button,
+  Center,
+  FormControl,
+  FormHelperText,
+  FormLabel,
+  Heading,
+  Input,
+  InputGroup,
+  InputRightAddon,
+  Tag,
+  TagCloseButton,
+  TagLabel,
+  VStack,
+  Wrap,
+  WrapItem,
+} from "@chakra-ui/react";
 import { initialNewGameState, newGameReducer } from "./model";
 import { createRecord } from "../../utils/idb";
 
@@ -17,9 +40,8 @@ export function NewGame() {
   const createGame = async (event: FormEvent) => {
     event.preventDefault();
     // do some validation
-    if (formState.name === "") return;
+    if (formState.players.length < 1) return;
     const data = {
-      name: formState.name,
       description: formState.description,
       location: formState.location,
       date: formState.date,
@@ -35,7 +57,6 @@ export function NewGame() {
     } else {
       console.log("Failed to create game", createdGame.message);
     }
-    // save to local storage
   };
 
   const resetForm = () => {
@@ -43,128 +64,168 @@ export function NewGame() {
   };
 
   return (
-    <div>
-      <h1>New Game</h1>
+    <VStack align="center">
+      <Heading as="h1" size="lg">
+        New Scorecard
+      </Heading>
       <form onSubmit={createGame}>
-        <label htmlFor="name">Event name</label>
-        <input
-          type="text"
-          id="name"
-          name="name"
-          onChange={(evt) =>
-            dispatch({ type: "setName", payload: evt.currentTarget.value })
-          }
-          value={formState.name}
-        />
-        <label htmlFor="description">description</label>
-        <input
-          type="text"
-          id="description"
-          name="description"
-          onChange={(evt) =>
-            dispatch({
-              type: "setDescription",
-              payload: evt.currentTarget.value,
-            })
-          }
-          value={formState.description}
-        />
-        <label htmlFor="location">Location</label>
-        <input
-          type="text"
-          id="location"
-          name="location"
-          onChange={(evt) =>
-            dispatch({ type: "setLocation", payload: evt.currentTarget.value })
-          }
-          value={formState.location}
-        />
-        <input
-          type="date"
-          id="date"
-          name="date"
-          onChange={(evt) =>
-            dispatch({ type: "setDate", payload: evt.currentTarget.value })
-          }
-          value={formState.date}
-        />
-        <label htmlFor="maxShots">Max Shots</label>
-        <span className="helperText">
-          We will stop counting after we hit this
-        </span>
-        <input
-          type="number"
-          id="maxShots"
-          name="maxShots"
-          value={formState.maxShots}
-          onChange={(evt) =>
-            dispatch({ type: "setMaxShots", payload: evt.currentTarget.value })
-          }
-        />
-        <label htmlFor="holes">Holes</label>
-        <div className="row">
-          <button
-            type="button"
-            onClick={() => dispatch({ type: "setHoles", payload: "9" })}
-          >
-            9
-          </button>
-          <button
-            type="button"
-            onClick={() => dispatch({ type: "setHoles", payload: "18" })}
-          >
-            18
-          </button>
-        </div>
-        <input
-          type="number"
-          id="holes"
-          name="holes"
-          value={formState.holes}
-          onChange={(evt) =>
-            dispatch({ type: "setHoles", payload: evt.currentTarget.value })
-          }
-        />
-        {formState.players.map((player, index) => {
-          return (
-            <div className="row" key={player + index}>
-              <span>{player}</span>
-              <button
-                onClick={() =>
-                  dispatch({ type: "removePlayer", payload: player })
-                }
+        <Box minW={{ md: "40rem" }} margin={{ md: "auto" }}>
+          <FormControl>
+            <FormLabel htmlFor="holes">Holes</FormLabel>
+            <Center gap="4" pb={2}>
+              <Button
+                size="sm"
+                variant="outline"
+                colorScheme="orange"
+                onClick={() => dispatch({ type: "setHoles", payload: "9" })}
               >
-                X
-              </button>
-            </div>
-          );
-        })}
-        <fieldset>
-          <label htmlFor="currentPlayer">Add players</label>
-          <input
-            type="text"
-            id="currentPlayer"
-            name="currentPlayer"
-            value={formState.currentPlayer}
-            onChange={(evt) =>
-              dispatch({
-                type: "setCurrentPlayer",
-                payload: evt.currentTarget.value,
-              })
-            }
-            onKeyDown={(evt) => {
-              if (evt.key === "Enter") {
-                addPlayer(evt);
+                9
+              </Button>
+              <Button
+                size="sm"
+                variant="outline"
+                colorScheme="orange"
+                onClick={() => dispatch({ type: "setHoles", payload: "18" })}
+              >
+                18
+              </Button>
+            </Center>
+            <Input
+              type="number"
+              id="holes"
+              value={formState.holes}
+              onChange={(evt) =>
+                dispatch({
+                  type: "setHoles",
+                  payload: evt.currentTarget.value,
+                })
               }
-            }}
-          />
-          <button type="button" onClick={addPlayer}>
-            Add
-          </button>
-        </fieldset>
-        <button type="submit">Create Game</button>
+            />
+            <FormHelperText>
+              How many holes does the course have?
+            </FormHelperText>
+          </FormControl>
+          <FormControl>
+            <FormLabel htmlFor="maxShots">Max Shots</FormLabel>
+            <Input
+              type="number"
+              id="maxShots"
+              onChange={(evt) =>
+                dispatch({
+                  type: "setMaxShots",
+                  payload: evt.currentTarget.value,
+                })
+              }
+              value={formState.maxShots}
+            />
+            <FormHelperText>
+              To save the embarrassment, set a max number of shots per hole
+            </FormHelperText>
+          </FormControl>
+          <FormControl>
+            <FormLabel htmlFor="currentPlayer">Add players</FormLabel>
+            <InputGroup>
+              <Input
+                type="text"
+                id="currentPlayer"
+                name="currentPlayer"
+                value={formState.currentPlayer}
+                onChange={(evt) =>
+                  dispatch({
+                    type: "setCurrentPlayer",
+                    payload: evt.currentTarget.value,
+                  })
+                }
+                onKeyDown={(evt) => {
+                  if (evt.key === "Enter") {
+                    addPlayer(evt);
+                  }
+                }}
+              />
+              <InputRightAddon padding={0}>
+                <Button paddingX={6} onClick={addPlayer}>
+                  Add
+                </Button>
+              </InputRightAddon>
+            </InputGroup>
+          </FormControl>
+          <Wrap spacing={4}>
+            {formState.players.map((player, index) => {
+              return (
+                <WrapItem key={`${player}-${index}`}>
+                  <Tag colorScheme="orange" borderRadius="full">
+                    <TagLabel>{player}</TagLabel>
+                    <TagCloseButton
+                      onClick={() =>
+                        dispatch({ type: "removePlayer", payload: player })
+                      }
+                    />
+                  </Tag>
+                </WrapItem>
+              );
+            })}
+          </Wrap>
+          <Accordion allowToggle width="100%" pb={4}>
+            <AccordionItem>
+              <h2>
+                <AccordionButton>
+                  <Box as="span" flex="1">
+                    Advanced
+                  </Box>
+                  <AccordionIcon />
+                </AccordionButton>
+              </h2>
+              <AccordionPanel pb={4} px={0}>
+                <FormControl>
+                  <FormLabel htmlFor="description">description</FormLabel>
+                  <Input
+                    onChange={(evt) =>
+                      dispatch({
+                        type: "setDescription",
+                        payload: evt.currentTarget.value,
+                      })
+                    }
+                    value={formState.description}
+                  />
+                </FormControl>
+                <FormControl>
+                  <FormLabel htmlFor="location">Location</FormLabel>
+                  <Input
+                    type="text"
+                    id="location"
+                    name="location"
+                    onChange={(evt) =>
+                      dispatch({
+                        type: "setLocation",
+                        payload: evt.currentTarget.value,
+                      })
+                    }
+                    value={formState.location}
+                  />
+                </FormControl>
+                <FormControl>
+                  <FormLabel htmlFor="date">Date</FormLabel>
+                  <Input
+                    type="date"
+                    id="date"
+                    onChange={(evt) =>
+                      dispatch({
+                        type: "setDate",
+                        payload: evt.currentTarget.value,
+                      })
+                    }
+                    value={formState.date}
+                  />
+                </FormControl>
+              </AccordionPanel>
+            </AccordionItem>
+          </Accordion>
+          <Button type="submit" colorScheme="orange" width="100%">
+            Create Game
+          </Button>
+        </Box>
       </form>
       <pre>{JSON.stringify(formState, null, 2)}</pre>
-    </div>
+    </VStack>
   );
 }

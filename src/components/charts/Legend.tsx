@@ -1,5 +1,5 @@
+import { Button } from "@chakra-ui/react";
 import { mapColors } from "../../utils/svg";
-import { Button } from "../Button";
 import "./Legend.css";
 
 interface LegendProps {
@@ -17,11 +17,9 @@ export const Legend = ({
 }: LegendProps) => {
   return (
     <div className="legend">
-      <Button
-        onClick={toggleShowingAll}
-        text={showing.length > 0 ? "Uncheck all" : "Check all"}
-        variant="primary"
-      />
+      <Button onClick={toggleShowingAll} colorScheme="orange">
+        {showing.length > 0 ? "Uncheck all" : "Check all"}
+      </Button>
 
       {data.map((d) => {
         return (

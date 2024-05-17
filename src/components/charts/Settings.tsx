@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { Button, IconButton } from "../Button";
+import { Button, IconButton } from "@chakra-ui/react";
 import { Modal } from "../Modal";
 import { Cog } from "../icons";
 import "./Settings.css";
@@ -58,7 +58,7 @@ export function Settings({ wrapperRef, height, width }: SettingsRef) {
   return (
     <div className="settings">
       <IconButton
-        label="settings"
+        aria-label="settings"
         icon={<Cog />}
         variant="transparent"
         onClick={handleClick}
@@ -71,12 +71,19 @@ export function Settings({ wrapperRef, height, width }: SettingsRef) {
             <span>holes</span>
           </label>
           <div>
-            <Button text="Cancel" onClick={handleClick} variant="secondary" />
             <Button
-              text="Save"
+              onClick={handleClick}
+              variant="outline"
+              colorScheme="orange"
+            >
+              Cancel
+            </Button>
+            <Button
               onClick={() => console.log("save settings")}
-              variant="primary"
-            />
+              colorScheme="orange"
+            >
+              Save
+            </Button>
           </div>
         </div>
       </Modal>
