@@ -1,8 +1,7 @@
-import { entries, set } from "idb-keyval";
+import { entries, get, set } from "idb-keyval";
 import { IScore } from "../models/data";
 
 type NewGame = {
-  name: string;
   description: string;
   location: string;
   date: string;
@@ -19,7 +18,6 @@ type RecordResponse = {
 export async function createRecord(data: NewGame): Promise<RecordResponse> {
   const timeStamp = new Date().toISOString();
   const record = {
-    name: data.name,
     description: data.description,
     location: data.location,
     date: data.date,
@@ -45,7 +43,6 @@ export type IDBRecord = {
 };
 
 type IDBProperties = {
-  name: string;
   description: string;
   location: string;
   date: string;
@@ -68,4 +65,8 @@ export async function checkForIncompleteGame() {
     });
   });
   return incompleteGames;
+}
+
+export async function fetchGame(gameId: string) {
+  return await get(gameId);
 }
