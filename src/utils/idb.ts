@@ -67,6 +67,8 @@ export async function checkForIncompleteGame() {
   return incompleteGames;
 }
 
-export async function fetchGame(gameId: string) {
+export async function fetchGame(
+  gameId: string
+): Promise<IDBProperties | undefined> {
   return await get(gameId);
 }
