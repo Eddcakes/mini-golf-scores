@@ -9,19 +9,19 @@ describe("createScoreTableArray", () => {
   const playerList = ["one", "two", "test"];
   const result = [
     {
-      one: { score: undefined },
-      two: { score: undefined },
-      test: { score: undefined },
+      one: null,
+      two: null,
+      test: null,
     },
     {
-      one: { score: undefined },
-      two: { score: undefined },
-      test: { score: undefined },
+      one: null,
+      two: null,
+      test: null,
     },
     {
-      one: { score: undefined },
-      two: { score: undefined },
-      test: { score: undefined },
+      one: null,
+      two: null,
+      test: null,
     },
   ];
   it("should return an array of length equal to the number of holes", () => {
@@ -40,19 +40,19 @@ describe("createScoreTableDictionary", () => {
   const playerList = ["one", "two", "test"];
   const result = {
     1: {
-      one: { score: undefined },
-      two: { score: undefined },
-      test: { score: undefined },
+      one: null,
+      two: null,
+      test: null,
     },
     2: {
-      one: { score: undefined },
-      two: { score: undefined },
-      test: { score: undefined },
+      one: null,
+      two: null,
+      test: null,
     },
     3: {
-      one: { score: undefined },
-      two: { score: undefined },
-      test: { score: undefined },
+      one: null,
+      two: null,
+      test: null,
     },
   };
   it("should return an object with keys equal to the number of holes", () => {

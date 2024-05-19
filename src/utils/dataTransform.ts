@@ -1,12 +1,12 @@
 interface PlayerScore {
-  [key: string]: { score: number | undefined };
+  [key: string]: number | null;
 }
 
 export const createScoreTableArray = (holes: number, playerList: string[]) => {
   return Array.from(Array(holes).keys()).map(() => {
     const playerScore: PlayerScore = {};
     playerList.forEach((player) => {
-      playerScore[player] = { score: undefined };
+      playerScore[player] = null;
     });
     return playerScore;
   });
@@ -16,6 +16,7 @@ interface ScoreTableDictionary {
   [key: number]: PlayerScore;
 }
 
+// not used
 export const createScoreTableDictionary = (
   holes: number,
   playerList: string[]
@@ -24,7 +25,7 @@ export const createScoreTableDictionary = (
   for (let ii = 0; ii < holes; ii++) {
     const playerScore: PlayerScore = {};
     playerList.forEach((player) => {
-      playerScore[player] = { score: undefined };
+      playerScore[player] = null;
     });
     dictionary[ii + 1] = playerScore;
   }
