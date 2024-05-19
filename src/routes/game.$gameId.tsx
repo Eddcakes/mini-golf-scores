@@ -20,6 +20,10 @@ import {
 } from "@chakra-ui/react";
 import { fetchGame } from "../utils/idb";
 import mockData from "../assets/data.json";
+import {
+  createScoreTableArray,
+  createScoreTableDictionary,
+} from "../utils/dataTransform";
 
 export const Route = createFileRoute("/game/$gameId")({
   loader: async ({ params }) => {
@@ -79,31 +83,28 @@ const mockPartialScores = [
   { name: "PAUL", hole: 4, score: 4 },
 ];
 
+const mockPlayerList = ["MG", "RYAN", "MARC", "JAMES", "MD", "EDD", "PAUL"];
+const mockHoles = 18;
+
 function Game() {
   // const { gameId } = Route.useParams();
   // prob need gameId for when we set the data back to idb so keep it around for now
   const data = Route.useLoaderData();
   // TODO, do i want to have the data as a dictionary or as an array for easier rendering
   const [scoreState, setScoreState] = useState(() => {
-    const dictionaryLike = createScoreTableDictionary(18, [
-      "MG",
-      "RYAN",
-      "MARC",
-      "JAMES",
-      "MD",
-      "EDD",
-      "PAUL",
-    ]);
+    const dictionaryLike = createScoreTableDictionary(
+      mockHoles,
+      mockPlayerList
+    );
+    //const arrayLike = createScoreTableArray(mockHoles, mockPlayerList);
     // mockData
     mockPartialScores.forEach((record) => {
       // name, hole, score
-      dictionaryLike[record.hole][record.name].score = record.score; // { {"MG": {}, "RYAN":{} }
-      // mapTable.set(record.hole, )
-      // smallerArrayTable[record.hole-1][record.name].score = record.score
+      dictionaryLike[record.hole][record.name].score = record.score;
+      // arrayLike[record.hole-1][record.name].score = record.score
     });
     return dictionaryLike;
   });
-  //const arrayLike = createScoreTableArray(data.holes, data.playerList);
 
   // setScoreState will be used by form elements from a modal to update the scoreState
   // after a debounce timer we will update the idb with the new scoreState
@@ -156,32 +157,6 @@ function Game() {
     </Box>
   );
 }
-
-const createScoreTableArray = (holes: number, playerList: string[]) => {
-  return Array.from(
-    Array(holes)
-      .keys()
-      .map(() => {
-        const playerScore = {};
-        playerList.forEach((player) => {
-          playerScore[player] = { score: undefined };
-        });
-        return playerScore;
-      })
-  );
-};
-
-const createScoreTableDictionary = (holes: number, playerList: string[]) => {
-  const dictionary = {};
-  for (let ii = 0; ii < holes; ii++) {
-    const playerScore = {};
-    playerList.forEach((player) => {
-      playerScore[player] = { score: undefined };
-    });
-    dictionary[ii + 1] = playerScore;
-  }
-  return dictionary;
-};
 
 // so for each cell, should it be a button
 // or should it just be, clicking row opens a modal with a form to update scores
