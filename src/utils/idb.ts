@@ -6,8 +6,9 @@ type NewGame = {
   location: string;
   date: string;
   maxShots: number;
+  holes: number;
   playerList: string[];
-  // data: IScore[];
+  // scores: IScore[];
 };
 
 type RecordResponse = {
@@ -17,13 +18,14 @@ type RecordResponse = {
 
 export async function createRecord(data: NewGame): Promise<RecordResponse> {
   const timeStamp = new Date().toISOString();
-  const record = {
+  const record: IDBProperties = {
     description: data.description,
     location: data.location,
     date: data.date,
     maxShots: data.maxShots,
+    holes: data.holes,
     playerList: data.playerList,
-    data: [],
+    scores: [],
     created: timeStamp,
     updated: timeStamp,
     complete: false,
@@ -47,11 +49,12 @@ type IDBProperties = {
   location: string;
   date: string;
   maxShots: number;
+  holes: number;
   playerList: string[];
-  data: IScore[];
+  scores: IScore[];
   created: string;
   updated: string;
-  complete: string;
+  complete: boolean;
 };
 
 export async function checkForIncompleteGame() {

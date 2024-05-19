@@ -1,3 +1,4 @@
+import { useState } from "react";
 import { Link, createFileRoute, notFound } from "@tanstack/react-router";
 import {
   Alert,
@@ -7,9 +8,18 @@ import {
   Box,
   Link as ChakraLink,
   HStack,
+  Table,
+  TableCaption,
+  TableContainer,
+  Tbody,
+  Td,
+  Th,
+  Thead,
+  Tr,
   VStack,
 } from "@chakra-ui/react";
 import { fetchGame } from "../utils/idb";
+import mockData from "../assets/data.json";
 
 export const Route = createFileRoute("/game/$gameId")({
   loader: async ({ params }) => {
@@ -23,17 +33,160 @@ export const Route = createFileRoute("/game/$gameId")({
   notFoundComponent: () => <GameNotFound />,
 });
 
+const mockPartialScores = [
+  { name: "MG", hole: 1, score: 2 },
+  { name: "MG", hole: 2, score: 6 },
+  { name: "MG", hole: 3, score: 2 },
+  { name: "MG", hole: 4, score: 2 },
+  { name: "MG", hole: 5, score: 2 },
+  { name: "MG", hole: 6, score: 2 },
+  { name: "MG", hole: 7, score: 2 },
+  { name: "MG", hole: 8, score: 1 },
+  { name: "MG", hole: 9, score: 3 },
+
+  { name: "RYAN", hole: 1, score: 2 },
+  { name: "RYAN", hole: 2, score: 3 },
+  { name: "RYAN", hole: 3, score: 2 },
+  { name: "RYAN", hole: 4, score: 3 },
+  { name: "RYAN", hole: 5, score: 3 },
+  { name: "RYAN", hole: 6, score: 2 },
+  { name: "RYAN", hole: 7, score: 2 },
+  { name: "MARC", hole: 1, score: 2 },
+  { name: "MARC", hole: 2, score: 3 },
+  { name: "MARC", hole: 3, score: 3 },
+  { name: "MARC", hole: 4, score: 2 },
+  { name: "MARC", hole: 5, score: 2 },
+  { name: "JAMES", hole: 1, score: 2 },
+  { name: "MD", hole: 1, score: 2 },
+  { name: "MD", hole: 2, score: 3 },
+  { name: "MD", hole: 3, score: 4 },
+  { name: "MD", hole: 4, score: 2 },
+  { name: "MD", hole: 5, score: 2 },
+  { name: "MD", hole: 6, score: 1 },
+  { name: "MD", hole: 7, score: 3 },
+  { name: "MD", hole: 8, score: 1 },
+  { name: "EDD", hole: 1, score: 3 },
+  { name: "EDD", hole: 2, score: 3 },
+  { name: "EDD", hole: 3, score: 2 },
+  { name: "EDD", hole: 4, score: 6 },
+  { name: "EDD", hole: 5, score: 1 },
+  { name: "EDD", hole: 6, score: 2 },
+  { name: "EDD", hole: 7, score: 2 },
+  { name: "EDD", hole: 8, score: 1 },
+  { name: "PAUL", hole: 1, score: 4 },
+  { name: "PAUL", hole: 2, score: 7 },
+  { name: "PAUL", hole: 3, score: 4 },
+  { name: "PAUL", hole: 4, score: 4 },
+];
+
 function Game() {
-  const { gameId } = Route.useParams();
+  // const { gameId } = Route.useParams();
+  // prob need gameId for when we set the data back to idb so keep it around for now
   const data = Route.useLoaderData();
-  console.log(data);
+  // TODO, do i want to have the data as a dictionary or as an array for easier rendering
+  const [scoreState, setScoreState] = useState(() => {
+    const dictionaryLike = createScoreTableDictionary(18, [
+      "MG",
+      "RYAN",
+      "MARC",
+      "JAMES",
+      "MD",
+      "EDD",
+      "PAUL",
+    ]);
+    // mockData
+    mockPartialScores.forEach((record) => {
+      // name, hole, score
+      dictionaryLike[record.hole][record.name].score = record.score; // { {"MG": {}, "RYAN":{} }
+      // mapTable.set(record.hole, )
+      // smallerArrayTable[record.hole-1][record.name].score = record.score
+    });
+    return dictionaryLike;
+  });
+  //const arrayLike = createScoreTableArray(data.holes, data.playerList);
+
+  // setScoreState will be used by form elements from a modal to update the scoreState
+  // after a debounce timer we will update the idb with the new scoreState
+
+  //console.log(arrayLike);
+  console.log(scoreState);
+  // console.log(data);
+  // console.log(data.scores);
+  // console.log(mockData.sort((a, b) => a.hole - b.hole));
+  const findPlayerScore = (player: string, hole: number) => {
+    return data.scores?.find((rec) => rec.name === player && rec.hole === hole);
+  };
+  // maybe have to put scores into state and order them to make rendering and updating less intensive
 
   return (
-    <div>
-      Game: {gameId} {data.description}
-    </div>
+    <Box maxW={{ md: "40rem" }} margin={{ md: "auto" }}>
+      <TableContainer>
+        <Table>
+          <TableCaption>
+            {data.complete ? "complete" : "in progress"}
+          </TableCaption>
+          <Thead>
+            <Tr>
+              <Th>Hole</Th>
+              {data.playerList.map((player) => {
+                return <Th key={player}>{player}</Th>;
+              })}
+            </Tr>
+          </Thead>
+          <Tbody>
+            {Array(data.holes)
+              .fill(0)
+              .map((_, idx) => {
+                return (
+                  <Tr key={idx}>
+                    <Td>{idx + 1}</Td>
+                    {data.playerList.map((player) => {
+                      return (
+                        <Td key={player}>
+                          {findPlayerScore(player, idx + 1)?.score || "-"}
+                        </Td>
+                      );
+                    })}
+                  </Tr>
+                );
+              })}
+          </Tbody>
+        </Table>
+      </TableContainer>
+    </Box>
   );
 }
+
+const createScoreTableArray = (holes: number, playerList: string[]) => {
+  return Array.from(
+    Array(holes)
+      .keys()
+      .map(() => {
+        const playerScore = {};
+        playerList.forEach((player) => {
+          playerScore[player] = { score: undefined };
+        });
+        return playerScore;
+      })
+  );
+};
+
+const createScoreTableDictionary = (holes: number, playerList: string[]) => {
+  const dictionary = {};
+  for (let ii = 0; ii < holes; ii++) {
+    const playerScore = {};
+    playerList.forEach((player) => {
+      playerScore[player] = { score: undefined };
+    });
+    dictionary[ii + 1] = playerScore;
+  }
+  return dictionary;
+};
+
+// so for each cell, should it be a button
+// or should it just be, clicking row opens a modal with a form to update scores
+// could we have it so every cell is a button, opens up the same form
+// but depending which button was clicked, "focused" player is set from the button clicked
 
 function GameNotFound() {
   return (
