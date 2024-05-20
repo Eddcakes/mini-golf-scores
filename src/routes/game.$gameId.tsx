@@ -6,21 +6,8 @@ import {
   AlertIcon,
   AlertTitle,
   Box,
-  Button,
-  ButtonGroup,
   Link as ChakraLink,
-  FormControl,
-  FormErrorMessage,
-  FormLabel,
   HStack,
-  Input,
-  Modal,
-  ModalBody,
-  ModalCloseButton,
-  ModalContent,
-  ModalFooter,
-  ModalHeader,
-  ModalOverlay,
   Table,
   TableCaption,
   TableContainer,
@@ -33,7 +20,8 @@ import {
   useDisclosure,
 } from "@chakra-ui/react";
 import { fetchGame } from "../utils/idb";
-import { clamp, createScoreTableArray } from "../utils/dataTransform";
+import { createScoreTableArray } from "../utils/dataTransform";
+import { ScoreModal } from "../components/game/ScoreModal";
 
 export const Route = createFileRoute("/game/$gameId")({
   loader: async ({ params }) => {
@@ -47,20 +35,12 @@ export const Route = createFileRoute("/game/$gameId")({
   notFoundComponent: () => <GameNotFound />,
 });
 
-interface ModalForState {
-  hole: number | null;
-  player: string | null;
-}
-
 function Game() {
   // const { gameId } = Route.useParams();
   // prob need gameId for when we set the data back to idb so keep it around for now
   const data = Route.useLoaderData();
   const { isOpen, onOpen, onClose } = useDisclosure();
-  const [modalFor, setModalFor] = useState<ModalForState>({
-    hole: null,
-    player: null,
-  });
+  const [modalForIndex, setModalForIndex] = useState<number | null>(null);
   const [scoreState, setScoreState] = useState(() => {
     // format the data so we can render in a table much easier
     const arrayLike = createScoreTableArray(data.holes, data.playerList);
@@ -70,20 +50,16 @@ function Game() {
     });
     return arrayLike;
   });
-  const openScoreForHole = (hole: number, player?: string) => {
-    setModalFor({ hole: hole, player: player ?? null });
+  const openScoreModal = (scoreIndex: number) => {
+    setModalForIndex(scoreIndex);
     onOpen();
   };
   const resetModalFor = () => {
-    submitScoresForHole();
-    setModalFor({ hole: null, player: null });
+    setModalForIndex(null);
     onClose();
-    // should this also submit the scores
-    // submitScoresForHole();
-    // can it even pass an event? since we are preventing default in form
   };
 
-  const submitScoresForHole = () => {
+  const updateScores = () => {
     // event.preventDefault();
     // kinda need the prevent default so we can do validation
     // update the scoreState with the new scores
@@ -92,30 +68,10 @@ function Game() {
     // then reset the modalFor state
     console.log("submitting scores for hole");
   };
-  // helper function to early return if hole is null
-  const selectScoreState = (hole: number | null, player: string) => {
-    if (!hole) return 0;
-    return scoreState[hole - 1][player] ?? 0;
-  };
 
-  const handleAdd1Score = (hole: number, player: string) => {
-    const tempScore = [...scoreState];
-    const scoreValue = tempScore[hole][player] ?? 0;
-    // clamp score on max shots
-    tempScore[hole][player] = clamp(scoreValue + 1, 0, data.maxShots); // scoreValue < data.maxShots ? scoreValue + 1 : 10;
-    setScoreState(tempScore);
-  };
-  const handleMinus1Score = (hole: number, player: string) => {
-    const tempScore = [...scoreState];
-    const scoreValue = tempScore[hole][player] ?? 0;
-    // clamp score on 0
-    tempScore[hole][player] = clamp(scoreValue - 1, 0, data.maxShots);
-    setScoreState(tempScore);
-  };
-  // setScoreState will be used by fotempScorerm elements from a modal to update the scoreState
   // after a debounce timer we will update the idb with the new scoreState
 
-  // console.log(scoreState);
+  console.log(scoreState);
   // console.log(data);
 
   return (
@@ -147,7 +103,7 @@ function Game() {
                         <Td
                           key={player}
                           role="button"
-                          onClick={() => openScoreForHole(idx + 1, player)}
+                          onClick={() => openScoreModal(idx)}
                         >
                           {hole[player] || "-"}
                         </Td>
@@ -160,85 +116,14 @@ function Game() {
           </Tbody>
         </Table>
       </TableContainer>
-      <Modal isOpen={isOpen} onClose={resetModalFor}>
-        <ModalOverlay>
-          <ModalContent>
-            <ModalHeader>Hole: {modalFor.hole} Update Scores</ModalHeader>
-            <ModalCloseButton />
-            <ModalBody>
-              <form onSubmit={submitScoresForHole}>
-                <VStack>
-                  {modalFor.hole != null ? (
-                    Object.keys(scoreState[modalFor.hole - 1]).map((player) => {
-                      return (
-                        <FormControl
-                          key={player}
-                          isInvalid={
-                            selectScoreState(modalFor.hole, player) >
-                              data.maxShots ||
-                            selectScoreState(modalFor.hole, player) < 0
-                          }
-                        >
-                          <FormLabel>{player}</FormLabel>
-                          <Input
-                            type="number"
-                            value={selectScoreState(modalFor.hole, player)}
-                            onChange={(evt) => {
-                              setScoreState((prev) => {
-                                const newState = [...prev];
-                                modalFor.hole != null
-                                  ? (newState[modalFor!.hole - 1][player] =
-                                      newState[modalFor!.hole - 1][player] =
-                                        parseInt(evt.target.value))
-                                  : // tried clamping here but not great UX, so just show error message
-                                    null;
-                                return newState;
-                              });
-                            }}
-                          />
-                          <FormErrorMessage>
-                            {selectScoreState(modalFor.hole, player) >
-                              data.maxShots &&
-                              `Score is above the maximum shots value: ${data.maxShots}, when saving this score will be set to ${data.maxShots}`}
-                            {selectScoreState(modalFor.hole, player) < 0 &&
-                              `Score is below 0, when saving this score will be set to 0`}
-                          </FormErrorMessage>
-                          <ButtonGroup>
-                            <Button
-                              onClick={() =>
-                                handleMinus1Score(modalFor.hole! - 1, player)
-                              }
-                            >
-                              -
-                            </Button>
-                            <Button
-                              onClick={() =>
-                                handleAdd1Score(modalFor.hole! - 1, player)
-                              }
-                            >
-                              +
-                            </Button>
-                          </ButtonGroup>
-                        </FormControl>
-                      );
-                    })
-                  ) : (
-                    <div>not found hole</div>
-                  )}
-                  <FormControl>
-                    <FormLabel htmlFor="score">Score</FormLabel>
-                  </FormControl>
-                </VStack>
-              </form>
-            </ModalBody>
-            <ModalFooter>
-              <Button mr={3} onClick={resetModalFor}>
-                Save
-              </Button>
-            </ModalFooter>
-          </ModalContent>
-        </ModalOverlay>
-      </Modal>
+      <ScoreModal
+        updateScores={updateScores}
+        scoreState={scoreState}
+        isOpen={isOpen}
+        resetModalFor={resetModalFor}
+        modalForIndex={modalForIndex}
+        maxShots={data.maxShots}
+      />
     </Box>
   );
 }
