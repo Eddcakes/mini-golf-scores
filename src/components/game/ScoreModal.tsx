@@ -41,23 +41,36 @@ export function ScoreModal({
   const [localScoreState, setLocalScoreState] = useState([...scoreState]);
   // helper function to early return if hole is null
   const selectScoreValue = (hole: number | null, player: string) => {
-    if (!hole) return 0;
+    if (hole == null) return 0;
     return localScoreState[hole][player] ?? 0;
   };
 
   const handleAdd1Score = (hole: number, player: string) => {
-    const tempScore = [...scoreState];
-    const scoreValue = tempScore[hole][player] ?? 0;
-    // clamp score on max shots
-    tempScore[hole][player] = clamp(scoreValue + 1, 0, maxShots);
-    setLocalScoreState(tempScore);
+    console.log("adding 1 to score at hole: ", hole);
+    setLocalScoreState((prev) =>
+      prev.map((score, idx) => {
+        if (idx === hole) {
+          return {
+            ...score,
+            [player]: clamp((score[player] ?? 0) + 1, 0, maxShots),
+          };
+        }
+        return score;
+      })
+    );
   };
   const handleMinus1Score = (hole: number, player: string) => {
-    const tempScore = [...scoreState];
-    const scoreValue = tempScore[hole][player] ?? 0;
-    // clamp score on 0
-    tempScore[hole][player] = clamp(scoreValue - 1, 0, maxShots);
-    setLocalScoreState(tempScore);
+    setLocalScoreState((prev) =>
+      prev.map((score, idx) => {
+        if (idx === hole) {
+          return {
+            ...score,
+            [player]: clamp((score[player] ?? 0) - 1, 0, maxShots),
+          };
+        }
+        return score;
+      })
+    );
   };
   const submitScoresForHole = (event: FormEvent) => {
     event.preventDefault();
