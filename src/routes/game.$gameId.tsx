@@ -19,9 +19,14 @@ import {
   VStack,
   useDisclosure,
 } from "@chakra-ui/react";
-import { fetchGame } from "../utils/idb";
-import { createScoreTableArray } from "../utils/dataTransform";
+import { fetchGame, updateScores } from "../utils/idb";
+import {
+  PlayerScore,
+  clamp,
+  createScoreTableArray,
+} from "../utils/dataTransform";
 import { ScoreModal } from "../components/game/ScoreModal";
+import { IScore } from "../models/data";
 
 export const Route = createFileRoute("/game/$gameId")({
   loader: async ({ params }) => {
@@ -36,8 +41,7 @@ export const Route = createFileRoute("/game/$gameId")({
 });
 
 function Game() {
-  // const { gameId } = Route.useParams();
-  // prob need gameId for when we set the data back to idb so keep it around for now
+  const { gameId } = Route.useParams();
   const data = Route.useLoaderData();
   const { isOpen, onOpen, onClose } = useDisclosure();
   const [modalForIndex, setModalForIndex] = useState<number | null>(null);
@@ -59,21 +63,30 @@ function Game() {
     onClose();
   };
 
-  const updateScores = () => {
-    // event.preventDefault();
-    // kinda need the prevent default so we can do validation
-    // update the scoreState with the new scores
-    // then update the idb with the new scores
-    // then close the modal
-    // then reset the modalFor state
-    console.log("submitting scores for hole");
+  const publishScores = async (updatedScoreState: PlayerScore[]) => {
+    // transform the updatedScoreState back into the IScore[] format
+    const newScores: IScore[] = [];
+    updatedScoreState.forEach((record, idx) => {
+      const hole = idx + 1;
+      Object.entries(record).forEach(([name, score]) => {
+        if (score == null) return;
+        newScores.push({
+          hole: hole,
+          name: name,
+          score: clamp(score, 0, data.maxShots),
+        });
+      });
+    });
+
+    const updating = await updateScores(gameId, newScores);
+    if (updating.success) {
+      setScoreState(updatedScoreState);
+      onClose();
+      setModalForIndex(null);
+    } else {
+      console.error("failed to update scores", updating.message);
+    }
   };
-
-  // after a debounce timer we will update the idb with the new scoreState
-
-  console.log(scoreState);
-  // console.log(data);
-
   return (
     <Box maxW={{ md: "40rem" }} margin={{ md: "auto" }}>
       <TableContainer>
@@ -117,7 +130,7 @@ function Game() {
         </Table>
       </TableContainer>
       <ScoreModal
-        updateScores={updateScores}
+        updateScores={publishScores}
         scoreState={scoreState}
         isOpen={isOpen}
         resetModalFor={resetModalFor}
@@ -127,8 +140,6 @@ function Game() {
     </Box>
   );
 }
-
-// but depending which button was clicked, "focused" player is set from the button clicked
 
 function GameNotFound() {
   return (

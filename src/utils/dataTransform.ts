@@ -1,4 +1,4 @@
-interface PlayerScore {
+export interface PlayerScore {
   [key: string]: number | null;
 }
 

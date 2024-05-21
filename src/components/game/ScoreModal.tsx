@@ -22,7 +22,7 @@ interface ScoreState {
 }
 
 interface ScoreModalProps {
-  updateScores: () => void;
+  updateScores: (newScores: ScoreState[]) => void;
   scoreState: ScoreState[];
   isOpen: boolean;
   resetModalFor: () => void;
@@ -46,7 +46,6 @@ export function ScoreModal({
   };
 
   const handleAdd1Score = (hole: number, player: string) => {
-    console.log("adding 1 to score at hole: ", hole);
     setLocalScoreState((prev) =>
       prev.map((score, idx) => {
         if (idx === hole) {
@@ -74,17 +73,22 @@ export function ScoreModal({
   };
   const submitScoresForHole = (event: FormEvent) => {
     event.preventDefault();
-    console.log("submitting scores, should save localscorestate to scorestate");
-    updateScores();
+    updateScores(localScoreState);
+    // should this be async and show a toast on error?
+  };
+
+  const closeModal = () => {
+    resetModalFor();
+    setLocalScoreState([...scoreState]);
   };
   return (
-    <Modal isOpen={isOpen} onClose={resetModalFor}>
+    <Modal isOpen={isOpen} onClose={closeModal}>
       <ModalOverlay>
         <ModalContent>
-          <ModalHeader>Hole: {modalForIndex! + 1} Update Scores</ModalHeader>
-          <ModalCloseButton />
-          <ModalBody>
-            <form onSubmit={submitScoresForHole}>
+          <form onSubmit={submitScoresForHole}>
+            <ModalHeader>Hole: {modalForIndex! + 1} Update Scores</ModalHeader>
+            <ModalCloseButton />
+            <ModalBody>
               <VStack>
                 {modalForIndex != null ? (
                   Object.keys(localScoreState[modalForIndex]).map((player) => {
@@ -146,13 +150,13 @@ export function ScoreModal({
                   <FormLabel htmlFor="score">Score</FormLabel>
                 </FormControl>
               </VStack>
-            </form>
-          </ModalBody>
-          <ModalFooter>
-            <Button mr={3} type="submit">
-              Save
-            </Button>
-          </ModalFooter>
+            </ModalBody>
+            <ModalFooter>
+              <Button mr={3} type="submit">
+                Save
+              </Button>
+            </ModalFooter>
+          </form>
         </ModalContent>
       </ModalOverlay>
     </Modal>

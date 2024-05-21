@@ -75,3 +75,24 @@ export async function fetchGame(
 ): Promise<IDBProperties | undefined> {
   return await get(gameId);
 }
+
+export async function updateScores(
+  gameId: string,
+  scores: IScore[]
+): Promise<RecordResponse> {
+  return await get(gameId).then((record) => {
+    if (record) {
+      record.scores = scores;
+      record.updated = new Date().toISOString();
+      return set(gameId, record)
+        .then(() => {
+          return { success: true, message: "Scores updated" };
+        })
+        .catch((error) => {
+          return { success: false, message: error };
+        });
+    } else {
+      return { success: false, message: "Game not found" };
+    }
+  });
+}
