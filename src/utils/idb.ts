@@ -8,7 +8,6 @@ type NewGame = {
   maxShots: number;
   holes: number;
   playerList: string[];
-  // scores: IScore[];
 };
 
 type RecordResponse = {

@@ -21,6 +21,7 @@ import {
   VStack,
   Wrap,
   WrapItem,
+  useToast,
 } from "@chakra-ui/react";
 import { initialNewGameState, newGameReducer } from "./model";
 import { createRecord } from "../../utils/idb";
@@ -28,6 +29,7 @@ import { useNavigate } from "@tanstack/react-router";
 
 export function NewGame() {
   const navigate = useNavigate();
+  const toast = useToast();
   const [formState, dispatch] = useReducer(newGameReducer, initialNewGameState);
   const addPlayer = (
     event: FormEvent<HTMLButtonElement | HTMLInputElement>
@@ -54,12 +56,16 @@ export function NewGame() {
 
     const createdGame = await createRecord(data);
     if (createdGame.success) {
-      console.log("Game created:", createdGame.message);
       resetForm();
       navigate({ from: "/", to: `/game/${createdGame.message}` });
     } else {
-      console.log("Failed to create game", createdGame.message);
-      // toast error
+      toast({
+        title: "Failed to create game",
+        description: `${createdGame.message}`,
+        status: "error",
+        duration: 2000,
+        isClosable: true,
+      });
     }
   };
 

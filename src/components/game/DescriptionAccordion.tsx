@@ -322,14 +322,3 @@ function Status({
   }
   return <Text>Status: {complete ? "Complete" : "Incomplete"}</Text>;
 }
-
-/* 
-toast
-
-You have completed the game without all scores being filled
-are you sure you want to complete the game?
-
-You have changed the playerList for the game, this will remove `player` scores
-are you sure you want to continue?
-
-*/
