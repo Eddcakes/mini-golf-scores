@@ -1,25 +1,38 @@
 import { useState } from "react";
-import { Link, createFileRoute, notFound } from "@tanstack/react-router";
+import {
+  Link,
+  createFileRoute,
+  notFound,
+  useRouter,
+} from "@tanstack/react-router";
 import {
   Alert,
   AlertDescription,
   AlertIcon,
   AlertTitle,
   Box,
+  Button,
   Link as ChakraLink,
   HStack,
   Table,
-  TableCaption,
   TableContainer,
   Tbody,
   Td,
+  Tfoot,
   Th,
   Thead,
   Tr,
   VStack,
   useDisclosure,
+  useToast,
 } from "@chakra-ui/react";
-import { fetchGame, updateScores } from "../utils/idb";
+
+import {
+  IDBProperties,
+  fetchGame,
+  updateDetails,
+  updateScores,
+} from "../utils/idb";
 import {
   PlayerScore,
   clamp,
@@ -27,6 +40,7 @@ import {
 } from "../utils/dataTransform";
 import { ScoreModal } from "../components/game/ScoreModal";
 import { IScore } from "../models/data";
+import { DescriptionAccordion } from "../components/game/DescriptionAccordion";
 
 export const Route = createFileRoute("/game/$gameId")({
   loader: async ({ params }) => {
@@ -43,7 +57,9 @@ export const Route = createFileRoute("/game/$gameId")({
 function Game() {
   const { gameId } = Route.useParams();
   const data = Route.useLoaderData();
+  const router = useRouter();
   const { isOpen, onOpen, onClose } = useDisclosure();
+  const toast = useToast();
   const [modalForIndex, setModalForIndex] = useState<number | null>(null);
   const [scoreState, setScoreState] = useState(() => {
     // format the data so we can render in a table much easier
@@ -83,17 +99,55 @@ function Game() {
       setScoreState(updatedScoreState);
       onClose();
       setModalForIndex(null);
+      toast({
+        title: "Scores updated",
+        status: "success",
+        duration: 2000,
+        isClosable: true,
+      });
     } else {
       console.error("failed to update scores", updating.message);
     }
   };
+  const publishDetails = async (updatedDetails: IDBProperties) => {
+    const newDetails = { ...data, ...updatedDetails };
+    const updating = await updateDetails(gameId, newDetails);
+    if (updating.success) {
+      router.invalidate();
+      toast({
+        title: "Details updated",
+        status: "success",
+        duration: 2000,
+        isClosable: true,
+      });
+    } else {
+      console.error("failed to update details", updating.message);
+    }
+  };
+  const handleFinish = async () => {
+    const expectedScoresLength = data.playerList.length * data.holes;
+    if (expectedScoresLength !== data.scores.length) {
+      // do something with AlertDialog to confirm they want to save
+      console.info("You have not entered all scores yet");
+    }
+    const updating = await updateDetails(gameId, { complete: true });
+    if (updating.success) {
+      router.invalidate();
+      toast({
+        title: "Game completed",
+        status: "success",
+        duration: 2000,
+        isClosable: true,
+      });
+    } else {
+      console.error("failed to update details", updating.message);
+    }
+  };
   return (
     <Box maxW={{ md: "40rem" }} margin={{ md: "auto" }}>
+      <DescriptionAccordion game={data} updateDetails={publishDetails} />
       <TableContainer>
         <Table>
-          <TableCaption>
-            {data.complete ? "complete" : "in progress"}
-          </TableCaption>
           <Thead>
             <Tr>
               <Th>Hole</Th>
@@ -127,8 +181,17 @@ function Game() {
               );
             })}
           </Tbody>
+          <Tfoot>
+            <Tr>
+              <Th>Hole</Th>
+              {data.playerList.map((player) => {
+                return <Th key={player}>{player}</Th>;
+              })}
+            </Tr>
+          </Tfoot>
         </Table>
       </TableContainer>
+      {!data.complete && <Button onClick={handleFinish}>Finish!</Button>}
       <ScoreModal
         updateScores={publishScores}
         scoreState={scoreState}

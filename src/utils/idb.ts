@@ -44,7 +44,7 @@ export type IDBRecord = {
   [key: string]: IDBProperties;
 };
 
-type IDBProperties = {
+export type IDBProperties = {
   description: string;
   location: string;
   date: string;
@@ -87,6 +87,30 @@ export async function updateScores(
       return set(gameId, record)
         .then(() => {
           return { success: true, message: "Scores updated" };
+        })
+        .catch((error) => {
+          return { success: false, message: error };
+        });
+    } else {
+      return { success: false, message: "Game not found" };
+    }
+  });
+}
+
+export async function updateDetails(
+  gameId: string,
+  details: Partial<IDBProperties>
+) {
+  return await get(gameId).then((record) => {
+    if (record) {
+      const newRecord = {
+        ...record,
+        ...details,
+        updated: new Date().toISOString(),
+      };
+      return set(gameId, newRecord)
+        .then(() => {
+          return { success: true, message: "Details updated" };
         })
         .catch((error) => {
           return { success: false, message: error };
