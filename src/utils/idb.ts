@@ -6,8 +6,8 @@ type NewGame = {
   location: string;
   date: string;
   maxShots: number;
+  holes: number;
   playerList: string[];
-  // data: IScore[];
 };
 
 type RecordResponse = {
@@ -17,13 +17,14 @@ type RecordResponse = {
 
 export async function createRecord(data: NewGame): Promise<RecordResponse> {
   const timeStamp = new Date().toISOString();
-  const record = {
+  const record: IDBProperties = {
     description: data.description,
     location: data.location,
     date: data.date,
     maxShots: data.maxShots,
+    holes: data.holes,
     playerList: data.playerList,
-    data: [],
+    scores: [],
     created: timeStamp,
     updated: timeStamp,
     complete: false,
@@ -42,16 +43,17 @@ export type IDBRecord = {
   [key: string]: IDBProperties;
 };
 
-type IDBProperties = {
+export type IDBProperties = {
   description: string;
   location: string;
   date: string;
   maxShots: number;
+  holes: number;
   playerList: string[];
-  data: IScore[];
+  scores: IScore[];
   created: string;
   updated: string;
-  complete: string;
+  complete: boolean;
 };
 
 export async function checkForIncompleteGame() {
@@ -67,6 +69,53 @@ export async function checkForIncompleteGame() {
   return incompleteGames;
 }
 
-export async function fetchGame(gameId: string) {
+export async function fetchGame(
+  gameId: string
+): Promise<IDBProperties | undefined> {
   return await get(gameId);
+}
+
+export async function updateScores(
+  gameId: string,
+  scores: IScore[]
+): Promise<RecordResponse> {
+  return await get(gameId).then((record) => {
+    if (record) {
+      record.scores = scores;
+      record.updated = new Date().toISOString();
+      return set(gameId, record)
+        .then(() => {
+          return { success: true, message: "Scores updated" };
+        })
+        .catch((error) => {
+          return { success: false, message: error };
+        });
+    } else {
+      return { success: false, message: "Game not found" };
+    }
+  });
+}
+
+export async function updateDetails(
+  gameId: string,
+  details: Partial<IDBProperties>
+) {
+  return await get(gameId).then((record) => {
+    if (record) {
+      const newRecord = {
+        ...record,
+        ...details,
+        updated: new Date().toISOString(),
+      };
+      return set(gameId, newRecord)
+        .then(() => {
+          return { success: true, message: "Details updated" };
+        })
+        .catch((error) => {
+          return { success: false, message: error };
+        });
+    } else {
+      return { success: false, message: "Game not found" };
+    }
+  });
 }

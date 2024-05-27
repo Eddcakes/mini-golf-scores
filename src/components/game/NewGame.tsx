@@ -5,7 +5,6 @@ import {
   AccordionIcon,
   AccordionItem,
   AccordionPanel,
-  Box,
   Button,
   Center,
   FormControl,
@@ -18,14 +17,19 @@ import {
   Tag,
   TagCloseButton,
   TagLabel,
+  Text,
   VStack,
   Wrap,
   WrapItem,
+  useToast,
 } from "@chakra-ui/react";
 import { initialNewGameState, newGameReducer } from "./model";
 import { createRecord } from "../../utils/idb";
+import { useNavigate } from "@tanstack/react-router";
 
 export function NewGame() {
+  const navigate = useNavigate();
+  const toast = useToast();
   const [formState, dispatch] = useReducer(newGameReducer, initialNewGameState);
   const addPlayer = (
     event: FormEvent<HTMLButtonElement | HTMLInputElement>
@@ -47,15 +51,21 @@ export function NewGame() {
       date: formState.date,
       maxShots: formState.maxShots,
       playerList: formState.players,
+      holes: formState.holes,
     };
 
     const createdGame = await createRecord(data);
     if (createdGame.success) {
-      console.log("Game created:", createdGame.message);
       resetForm();
-      // prob redirect not reset form
+      navigate({ from: "/", to: `/game/${createdGame.message}` });
     } else {
-      console.log("Failed to create game", createdGame.message);
+      toast({
+        title: "Failed to create game",
+        description: `${createdGame.message}`,
+        status: "error",
+        duration: 2000,
+        isClosable: true,
+      });
     }
   };
 
@@ -69,7 +79,7 @@ export function NewGame() {
         New Scorecard
       </Heading>
       <form onSubmit={createGame}>
-        <Box minW={{ md: "40rem" }} margin={{ md: "auto" }}>
+        <VStack minW={{ md: "40rem" }} margin={{ md: "auto" }}>
           <FormControl>
             <FormLabel htmlFor="holes">Holes</FormLabel>
             <Center gap="4" pb={2}>
@@ -169,61 +179,67 @@ export function NewGame() {
             <AccordionItem>
               <h2>
                 <AccordionButton>
-                  <Box as="span" flex="1">
+                  <Text
+                    as="span"
+                    flex="1"
+                    fontWeight="var(--chakra-fontWeights-medium)"
+                  >
                     Advanced
-                  </Box>
+                  </Text>
                   <AccordionIcon />
                 </AccordionButton>
               </h2>
               <AccordionPanel pb={4} px={0}>
-                <FormControl>
-                  <FormLabel htmlFor="description">description</FormLabel>
-                  <Input
-                    onChange={(evt) =>
-                      dispatch({
-                        type: "setDescription",
-                        payload: evt.currentTarget.value,
-                      })
-                    }
-                    value={formState.description}
-                  />
-                </FormControl>
-                <FormControl>
-                  <FormLabel htmlFor="location">Location</FormLabel>
-                  <Input
-                    type="text"
-                    id="location"
-                    name="location"
-                    onChange={(evt) =>
-                      dispatch({
-                        type: "setLocation",
-                        payload: evt.currentTarget.value,
-                      })
-                    }
-                    value={formState.location}
-                  />
-                </FormControl>
-                <FormControl>
-                  <FormLabel htmlFor="date">Date</FormLabel>
-                  <Input
-                    type="date"
-                    id="date"
-                    onChange={(evt) =>
-                      dispatch({
-                        type: "setDate",
-                        payload: evt.currentTarget.value,
-                      })
-                    }
-                    value={formState.date}
-                  />
-                </FormControl>
+                <VStack>
+                  <FormControl>
+                    <FormLabel htmlFor="description">Description</FormLabel>
+                    <Input
+                      onChange={(evt) =>
+                        dispatch({
+                          type: "setDescription",
+                          payload: evt.currentTarget.value,
+                        })
+                      }
+                      value={formState.description}
+                    />
+                  </FormControl>
+                  <FormControl>
+                    <FormLabel htmlFor="location">Location</FormLabel>
+                    <Input
+                      type="text"
+                      id="location"
+                      name="location"
+                      onChange={(evt) =>
+                        dispatch({
+                          type: "setLocation",
+                          payload: evt.currentTarget.value,
+                        })
+                      }
+                      value={formState.location}
+                    />
+                  </FormControl>
+                  <FormControl>
+                    <FormLabel htmlFor="date">Date</FormLabel>
+                    <Input
+                      type="date"
+                      id="date"
+                      onChange={(evt) =>
+                        dispatch({
+                          type: "setDate",
+                          payload: evt.currentTarget.value,
+                        })
+                      }
+                      value={formState.date}
+                    />
+                  </FormControl>
+                </VStack>
               </AccordionPanel>
             </AccordionItem>
           </Accordion>
           <Button type="submit" colorScheme="orange" width="100%">
             Create Game
           </Button>
-        </Box>
+        </VStack>
       </form>
       <pre>{JSON.stringify(formState, null, 2)}</pre>
     </VStack>

@@ -39,25 +39,16 @@ export const Route = createFileRoute("/")({
 });
 
 /*
-// refactor into
- - check for incomplete game
- - if found, ask user if they want to continue
- - if multiple found show modal/accordion with list
- - if selected, redirect to game
-  - if not, continue with new game
-
-  - new game page
-  - edit (existing) game page
-
-  - be able to complete games
-  __ feature complete
-  next feature
+  TODOs:
   - search?
   ^ new page for recent/search games?
-  - export data to file?
-  - import data from file?
+  - export data to JSON?
+  - import data from JSON?
+  - add par to hole column if exists, prob needs adding to "scores[]"
+  - allow updating playerList when editing?
+  - You have changed the playerList for the game, this will remove `player` scores
+    are you sure you want to continue?
   __
-  - add styling library
   - update deps
 */
 
