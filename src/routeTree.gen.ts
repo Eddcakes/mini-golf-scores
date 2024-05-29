@@ -13,80 +13,123 @@ import { createFileRoute } from '@tanstack/react-router'
 // Import Routes
 
 import { Route as rootRoute } from './routes/__root'
-import { Route as IndexImport } from './routes/index'
-import { Route as GameGameIdImport } from './routes/game.$gameId'
+import { Route as LayoutImport } from './routes/_layout'
+import { Route as ChartsImport } from './routes/_charts'
+import { Route as LayoutIndexImport } from './routes/_layout/index'
+import { Route as LayoutGameIndexImport } from './routes/_layout/game.index'
+import { Route as LayoutGameGameIdImport } from './routes/_layout/game.$gameId'
 
 // Create Virtual Routes
 
-const SettingsLazyImport = createFileRoute('/settings')()
-const PragueLazyImport = createFileRoute('/prague')()
-const AboutLazyImport = createFileRoute('/about')()
+const LayoutSettingsLazyImport = createFileRoute('/_layout/settings')()
+const LayoutAboutLazyImport = createFileRoute('/_layout/about')()
+const ChartsPragueLazyImport = createFileRoute('/_charts/prague')()
 
 // Create/Update Routes
 
-const SettingsLazyRoute = SettingsLazyImport.update({
-  path: '/settings',
-  getParentRoute: () => rootRoute,
-} as any).lazy(() => import('./routes/settings.lazy').then((d) => d.Route))
-
-const PragueLazyRoute = PragueLazyImport.update({
-  path: '/prague',
-  getParentRoute: () => rootRoute,
-} as any).lazy(() => import('./routes/prague.lazy').then((d) => d.Route))
-
-const AboutLazyRoute = AboutLazyImport.update({
-  path: '/about',
-  getParentRoute: () => rootRoute,
-} as any).lazy(() => import('./routes/about.lazy').then((d) => d.Route))
-
-const IndexRoute = IndexImport.update({
-  path: '/',
+const LayoutRoute = LayoutImport.update({
+  id: '/_layout',
   getParentRoute: () => rootRoute,
 } as any)
 
-const GameGameIdRoute = GameGameIdImport.update({
-  path: '/game/$gameId',
+const ChartsRoute = ChartsImport.update({
+  id: '/_charts',
   getParentRoute: () => rootRoute,
+} as any)
+
+const LayoutIndexRoute = LayoutIndexImport.update({
+  path: '/',
+  getParentRoute: () => LayoutRoute,
+} as any)
+
+const LayoutSettingsLazyRoute = LayoutSettingsLazyImport.update({
+  path: '/settings',
+  getParentRoute: () => LayoutRoute,
+} as any).lazy(() =>
+  import('./routes/_layout/settings.lazy').then((d) => d.Route),
+)
+
+const LayoutAboutLazyRoute = LayoutAboutLazyImport.update({
+  path: '/about',
+  getParentRoute: () => LayoutRoute,
+} as any).lazy(() => import('./routes/_layout/about.lazy').then((d) => d.Route))
+
+const ChartsPragueLazyRoute = ChartsPragueLazyImport.update({
+  path: '/prague',
+  getParentRoute: () => ChartsRoute,
+} as any).lazy(() =>
+  import('./routes/_charts/prague.lazy').then((d) => d.Route),
+)
+
+const LayoutGameIndexRoute = LayoutGameIndexImport.update({
+  path: '/game/',
+  getParentRoute: () => LayoutRoute,
+} as any)
+
+const LayoutGameGameIdRoute = LayoutGameGameIdImport.update({
+  path: '/game/$gameId',
+  getParentRoute: () => LayoutRoute,
 } as any)
 
 // Populate the FileRoutesByPath interface
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
-    '/': {
-      id: '/'
-      path: '/'
-      fullPath: '/'
-      preLoaderRoute: typeof IndexImport
+    '/_charts': {
+      id: '/_charts'
+      path: ''
+      fullPath: ''
+      preLoaderRoute: typeof ChartsImport
       parentRoute: typeof rootRoute
     }
-    '/about': {
-      id: '/about'
-      path: '/about'
-      fullPath: '/about'
-      preLoaderRoute: typeof AboutLazyImport
+    '/_layout': {
+      id: '/_layout'
+      path: ''
+      fullPath: ''
+      preLoaderRoute: typeof LayoutImport
       parentRoute: typeof rootRoute
     }
-    '/prague': {
-      id: '/prague'
+    '/_charts/prague': {
+      id: '/_charts/prague'
       path: '/prague'
       fullPath: '/prague'
-      preLoaderRoute: typeof PragueLazyImport
-      parentRoute: typeof rootRoute
+      preLoaderRoute: typeof ChartsPragueLazyImport
+      parentRoute: typeof ChartsImport
     }
-    '/settings': {
-      id: '/settings'
+    '/_layout/about': {
+      id: '/_layout/about'
+      path: '/about'
+      fullPath: '/about'
+      preLoaderRoute: typeof LayoutAboutLazyImport
+      parentRoute: typeof LayoutImport
+    }
+    '/_layout/settings': {
+      id: '/_layout/settings'
       path: '/settings'
       fullPath: '/settings'
-      preLoaderRoute: typeof SettingsLazyImport
-      parentRoute: typeof rootRoute
+      preLoaderRoute: typeof LayoutSettingsLazyImport
+      parentRoute: typeof LayoutImport
     }
-    '/game/$gameId': {
-      id: '/game/$gameId'
+    '/_layout/': {
+      id: '/_layout/'
+      path: '/'
+      fullPath: '/'
+      preLoaderRoute: typeof LayoutIndexImport
+      parentRoute: typeof LayoutImport
+    }
+    '/_layout/game/$gameId': {
+      id: '/_layout/game/$gameId'
       path: '/game/$gameId'
       fullPath: '/game/$gameId'
-      preLoaderRoute: typeof GameGameIdImport
-      parentRoute: typeof rootRoute
+      preLoaderRoute: typeof LayoutGameGameIdImport
+      parentRoute: typeof LayoutImport
+    }
+    '/_layout/game/': {
+      id: '/_layout/game/'
+      path: '/game/'
+      fullPath: '/game/'
+      preLoaderRoute: typeof LayoutGameIndexImport
+      parentRoute: typeof LayoutImport
     }
   }
 }
@@ -94,11 +137,14 @@ declare module '@tanstack/react-router' {
 // Create and export the route tree
 
 export const routeTree = rootRoute.addChildren({
-  IndexRoute,
-  AboutLazyRoute,
-  PragueLazyRoute,
-  SettingsLazyRoute,
-  GameGameIdRoute,
+  ChartsRoute: ChartsRoute.addChildren({ ChartsPragueLazyRoute }),
+  LayoutRoute: LayoutRoute.addChildren({
+    LayoutAboutLazyRoute,
+    LayoutSettingsLazyRoute,
+    LayoutIndexRoute,
+    LayoutGameGameIdRoute,
+    LayoutGameIndexRoute,
+  }),
 })
 
 /* prettier-ignore-end */

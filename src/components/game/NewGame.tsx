@@ -26,6 +26,8 @@ import {
 import { initialNewGameState, newGameReducer } from "./model";
 import { createRecord } from "../../utils/idb";
 import { useNavigate } from "@tanstack/react-router";
+import { NumberInput } from "../NumberInput";
+import { clamp } from "../../utils/dataTransform";
 
 export function NewGame() {
   const navigate = useNavigate();
@@ -81,13 +83,13 @@ export function NewGame() {
       <form onSubmit={createGame}>
         <VStack minW={{ md: "40rem" }} margin={{ md: "auto" }}>
           <FormControl>
-            <FormLabel htmlFor="holes">Holes</FormLabel>
+            <FormLabel htmlFor="holes">Number of holes</FormLabel>
             <Center gap="4" pb={2}>
               <Button
                 size="sm"
                 variant="outline"
                 colorScheme="orange"
-                onClick={() => dispatch({ type: "setHoles", payload: "9" })}
+                onClick={() => dispatch({ type: "setHoles", payload: 9 })}
               >
                 9
               </Button>
@@ -95,19 +97,40 @@ export function NewGame() {
                 size="sm"
                 variant="outline"
                 colorScheme="orange"
-                onClick={() => dispatch({ type: "setHoles", payload: "18" })}
+                onClick={() => dispatch({ type: "setHoles", payload: 18 })}
               >
                 18
               </Button>
             </Center>
-            <Input
-              type="number"
-              id="holes"
+            <NumberInput
+              name="holes"
               value={formState.holes}
               onChange={(evt) =>
                 dispatch({
                   type: "setHoles",
-                  payload: evt.currentTarget.value,
+                  payload: isNaN(parseInt(evt.currentTarget.value))
+                    ? 0
+                    : clamp(
+                        parseInt(evt.currentTarget.value),
+                        0,
+                        Number.MAX_SAFE_INTEGER
+                      ),
+                })
+              }
+              onMinus={() =>
+                dispatch({
+                  type: "setHoles",
+                  payload: clamp(
+                    formState.holes - 1,
+                    0,
+                    Number.MAX_SAFE_INTEGER
+                  ),
+                })
+              }
+              onPlus={() =>
+                dispatch({
+                  type: "setHoles",
+                  payload: formState.holes + 1,
                 })
               }
             />
@@ -117,16 +140,31 @@ export function NewGame() {
           </FormControl>
           <FormControl>
             <FormLabel htmlFor="maxShots">Max Shots</FormLabel>
-            <Input
-              type="number"
-              id="maxShots"
+            <NumberInput
+              name="maxShots"
+              value={formState.maxShots}
               onChange={(evt) =>
                 dispatch({
                   type: "setMaxShots",
-                  payload: evt.currentTarget.value,
+                  payload: parseInt(evt.currentTarget.value),
                 })
               }
-              value={formState.maxShots}
+              onMinus={() =>
+                dispatch({
+                  type: "setMaxShots",
+                  payload: clamp(
+                    formState.maxShots - 1,
+                    0,
+                    Number.MAX_SAFE_INTEGER
+                  ),
+                })
+              }
+              onPlus={() =>
+                dispatch({
+                  type: "setMaxShots",
+                  payload: formState.maxShots + 1,
+                })
+              }
             />
             <FormHelperText>
               To save the embarrassment, set a max number of shots per hole
@@ -153,7 +191,11 @@ export function NewGame() {
                 }}
               />
               <InputRightAddon padding={0}>
-                <Button paddingX={6} onClick={addPlayer}>
+                <Button
+                  paddingX={6}
+                  onClick={addPlayer}
+                  borderRadius="0 var(--chakra-radii-md) var(--chakra-radii-md) 0"
+                >
                   Add
                 </Button>
               </InputRightAddon>
@@ -184,7 +226,7 @@ export function NewGame() {
                     flex="1"
                     fontWeight="var(--chakra-fontWeights-medium)"
                   >
-                    Advanced
+                    More details
                   </Text>
                   <AccordionIcon />
                 </AccordionButton>
@@ -241,7 +283,6 @@ export function NewGame() {
           </Button>
         </VStack>
       </form>
-      <pre>{JSON.stringify(formState, null, 2)}</pre>
     </VStack>
   );
 }

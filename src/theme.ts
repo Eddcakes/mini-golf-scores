@@ -10,6 +10,21 @@ const config: ThemeConfig = {
 };
 
 // 3. extend the theme
-const theme = extendTheme({ config });
+const theme = extendTheme({
+  config,
+  components: {
+    Table: {
+      variants: {
+        customStrip: {
+          tr: {
+            _odd: {
+              background: "var(--accent-colour)",
+            },
+          },
+        },
+      },
+    },
+  },
+});
 
 export default theme;
