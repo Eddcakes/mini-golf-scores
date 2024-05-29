@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import {
   Accordion,
   AccordionButton,
@@ -50,6 +50,10 @@ export function DescriptionAccordion({
     updateDetails(localState);
     toggleEditMode();
   };
+  useEffect(() => {
+    // if game updates we need to make sure localState is updated
+    setLocalState({ ...game });
+  }, [game]);
   return (
     <Accordion allowToggle width="100%">
       <AccordionItem>
