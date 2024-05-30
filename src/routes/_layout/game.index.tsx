@@ -18,6 +18,7 @@ import {
   TagLabel,
 } from "@chakra-ui/react";
 import { getAllGames, IDBRecord } from "../../utils/idb";
+import { useTitle } from "../../hooks/useTitle";
 
 // eslint-disable-next-line @typescript-eslint/ban-ts-comment
 // @ts-ignore
@@ -30,6 +31,7 @@ export const Route = createFileRoute("/_layout/game/")({
 });
 
 function GameList() {
+  useTitle("All games");
   const games = Route.useLoaderData();
   return (
     <VStack>

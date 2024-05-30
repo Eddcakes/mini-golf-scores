@@ -37,6 +37,7 @@ import {
 import { ScoreModal } from "../../components/game/ScoreModal";
 import { IScore } from "../../models/data";
 import { DescriptionAccordion } from "../../components/game/DescriptionAccordion";
+import { useTitle } from "../../hooks/useTitle";
 
 export const Route = createFileRoute("/_layout/game/$gameId")({
   loader: async ({ params }) => {
@@ -52,6 +53,7 @@ export const Route = createFileRoute("/_layout/game/$gameId")({
 
 function Game() {
   const { gameId } = Route.useParams();
+  useTitle(`Game ${gameId}`);
   const data = Route.useLoaderData();
   const router = useRouter();
   const { isOpen, onOpen, onClose } = useDisclosure();
