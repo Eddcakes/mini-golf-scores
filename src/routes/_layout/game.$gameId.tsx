@@ -18,6 +18,7 @@ import {
   TableContainer,
   Tbody,
   Td,
+  Text,
   Tfoot,
   Th,
   Thead,
@@ -27,24 +28,19 @@ import {
   useToast,
 } from "@chakra-ui/react";
 
-import {
-  IDBProperties,
-  fetchGame,
-  updateDetails,
-  updateScores,
-} from "../utils/idb";
+import { IDBProperties, getGame, setDetails, setScores } from "../../utils/idb";
 import {
   PlayerScore,
   clamp,
   createScoreTableArray,
-} from "../utils/dataTransform";
-import { ScoreModal } from "../components/game/ScoreModal";
-import { IScore } from "../models/data";
-import { DescriptionAccordion } from "../components/game/DescriptionAccordion";
+} from "../../utils/dataTransform";
+import { ScoreModal } from "../../components/game/ScoreModal";
+import { IScore } from "../../models/data";
+import { DescriptionAccordion } from "../../components/game/DescriptionAccordion";
 
-export const Route = createFileRoute("/game/$gameId")({
+export const Route = createFileRoute("/_layout/game/$gameId")({
   loader: async ({ params }) => {
-    const game = await fetchGame(params.gameId);
+    const game = await getGame(params.gameId);
     if (!game) {
       throw notFound();
     }
@@ -70,6 +66,13 @@ function Game() {
     });
     return arrayLike;
   });
+  const totalScores = scoreState.reduce((accumulator, hole) => {
+    data.playerList.forEach((player) => {
+      accumulator[player] = (accumulator[player] || 0) + (hole[player] || 0);
+    });
+    return accumulator;
+  }, {});
+
   const openScoreModal = (scoreIndex: number) => {
     setModalForIndex(scoreIndex);
     onOpen();
@@ -78,7 +81,6 @@ function Game() {
     setModalForIndex(null);
     onClose();
   };
-
   const publishScores = async (updatedScoreState: PlayerScore[]) => {
     // transform the updatedScoreState back into the IScore[] format
     const newScores: IScore[] = [];
@@ -94,7 +96,7 @@ function Game() {
       });
     });
 
-    const updating = await updateScores(gameId, newScores);
+    const updating = await setScores(gameId, newScores);
     if (updating.success) {
       setScoreState(updatedScoreState);
       onClose();
@@ -111,7 +113,7 @@ function Game() {
   };
   const publishDetails = async (updatedDetails: IDBProperties) => {
     const newDetails = { ...data, ...updatedDetails };
-    const updating = await updateDetails(gameId, newDetails);
+    const updating = await setDetails(gameId, newDetails);
     if (updating.success) {
       router.invalidate();
       toast({
@@ -130,7 +132,7 @@ function Game() {
       // do something with AlertDialog to confirm they want to save
       console.info("You have not entered all scores yet");
     }
-    const updating = await updateDetails(gameId, { complete: true });
+    const updating = await setDetails(gameId, { complete: true });
     if (updating.success) {
       router.invalidate();
       toast({
@@ -146,6 +148,11 @@ function Game() {
   return (
     <Box maxW={{ md: "40rem" }} margin={{ md: "auto" }}>
       <DescriptionAccordion game={data} updateDetails={publishDetails} />
+      {!data.complete && (
+        <Text fontSize="sm" fontWeight="medium" textAlign="center" p={2}>
+          Click a cell to update scores
+        </Text>
+      )}
       <TableContainer>
         <Table>
           <Thead>
@@ -183,15 +190,37 @@ function Game() {
           </Tbody>
           <Tfoot>
             <Tr>
-              <Th>Hole</Th>
+              <Th>
+                <VStack>
+                  <span>Total</span>
+                  <span>Score</span>
+                </VStack>
+              </Th>
               {data.playerList.map((player) => {
-                return <Th key={player}>{player}</Th>;
+                return (
+                  <Th key={player}>
+                    <VStack>
+                      <span>{player}</span>
+                      <span>{totalScores[player]}</span>
+                    </VStack>
+                  </Th>
+                );
               })}
             </Tr>
           </Tfoot>
         </Table>
       </TableContainer>
-      {!data.complete && <Button onClick={handleFinish}>Finish!</Button>}
+      {!data.complete && (
+        <Box pt={2} textAlign="center">
+          <Button
+            onClick={handleFinish}
+            width={{ base: "100%", md: "unset" }}
+            px={12}
+          >
+            Finish!
+          </Button>
+        </Box>
+      )}
       <ScoreModal
         updateScores={publishScores}
         scoreState={scoreState}
@@ -206,22 +235,20 @@ function Game() {
 
 function GameNotFound() {
   return (
-    <Box maxW={{ md: "40rem" }} margin={{ md: "auto" }}>
-      <Alert status="info">
-        <VStack>
-          <HStack>
-            <AlertIcon />
-            <AlertTitle>Hey, we cannot find that game.</AlertTitle>
-          </HStack>
-          <AlertDescription>
-            Remember, game data is stored locally in your browser, so if you are
-            trying a link from another person or another device you will need to{" "}
-            <ChakraLink to="/settings" textDecoration="underline" as={Link}>
-              import their game data
-            </ChakraLink>
-          </AlertDescription>
-        </VStack>
-      </Alert>
-    </Box>
+    <Alert status="info">
+      <VStack>
+        <HStack>
+          <AlertIcon />
+          <AlertTitle>Hey, we cannot find that game.</AlertTitle>
+        </HStack>
+        <AlertDescription>
+          Remember, game data is stored locally in your browser, so if you are
+          trying a link from another person or another device you will need to{" "}
+          <ChakraLink to="/settings" textDecoration="underline" as={Link}>
+            import their game data
+          </ChakraLink>
+        </AlertDescription>
+      </VStack>
+    </Alert>
   );
 }

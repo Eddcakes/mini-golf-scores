@@ -1,11 +1,9 @@
 import { FormEvent, useState } from "react";
 import {
   Button,
-  ButtonGroup,
   FormControl,
   FormErrorMessage,
   FormLabel,
-  Input,
   Modal,
   ModalBody,
   ModalCloseButton,
@@ -16,6 +14,7 @@ import {
   VStack,
 } from "@chakra-ui/react";
 import { clamp } from "../../utils/dataTransform";
+import { NumberInput } from "../NumberInput";
 
 interface ScoreState {
   [key: string]: number | null;
@@ -101,8 +100,7 @@ export function ScoreModal({
                         }
                       >
                         <FormLabel>{player}</FormLabel>
-                        <Input
-                          type="number"
+                        <NumberInput
                           value={selectScoreValue(modalForIndex, player)}
                           onChange={(evt) => {
                             setLocalScoreState((prev) => {
@@ -117,6 +115,10 @@ export function ScoreModal({
                               return newState;
                             });
                           }}
+                          onMinus={() =>
+                            handleMinus1Score(modalForIndex, player)
+                          }
+                          onPlus={() => handleAdd1Score(modalForIndex, player)}
                         />
                         <FormErrorMessage>
                           {selectScoreValue(modalForIndex, player) > maxShots &&
@@ -124,35 +126,16 @@ export function ScoreModal({
                           {selectScoreValue(modalForIndex, player) < 0 &&
                             `Score is below 0, when saving this score will be set to 0`}
                         </FormErrorMessage>
-                        <ButtonGroup>
-                          <Button
-                            onClick={() =>
-                              handleMinus1Score(modalForIndex, player)
-                            }
-                          >
-                            -
-                          </Button>
-                          <Button
-                            onClick={() =>
-                              handleAdd1Score(modalForIndex, player)
-                            }
-                          >
-                            +
-                          </Button>
-                        </ButtonGroup>
                       </FormControl>
                     );
                   })
                 ) : (
                   <div>not found hole</div>
                 )}
-                <FormControl>
-                  <FormLabel htmlFor="score">Score</FormLabel>
-                </FormControl>
               </VStack>
             </ModalBody>
             <ModalFooter>
-              <Button mr={3} type="submit">
+              <Button type="submit" width="100%">
                 Save
               </Button>
             </ModalFooter>

@@ -56,7 +56,7 @@ export type IDBProperties = {
   complete: boolean;
 };
 
-export async function checkForIncompleteGame() {
+export async function getIncompleteGames() {
   const incompleteGames: IDBRecord[] = [];
   await entries<string, IDBProperties>().then((allGames) => {
     allGames.forEach(([key, value]) => {
@@ -69,13 +69,19 @@ export async function checkForIncompleteGame() {
   return incompleteGames;
 }
 
-export async function fetchGame(
+export async function getAllGames() {
+  return await entries<string, IDBProperties>().then((allGames) =>
+    allGames.map(([key, value]) => ({ [key]: value }))
+  );
+}
+
+export async function getGame(
   gameId: string
 ): Promise<IDBProperties | undefined> {
   return await get(gameId);
 }
 
-export async function updateScores(
+export async function setScores(
   gameId: string,
   scores: IScore[]
 ): Promise<RecordResponse> {
@@ -96,7 +102,7 @@ export async function updateScores(
   });
 }
 
-export async function updateDetails(
+export async function setDetails(
   gameId: string,
   details: Partial<IDBProperties>
 ) {

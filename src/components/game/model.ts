@@ -16,9 +16,9 @@ export function newGameReducer(state: FormState, action: Action): FormState {
     case "setDate":
       return { ...state, date: action.payload };
     case "setMaxShots":
-      return { ...state, maxShots: parseInt(action.payload) };
+      return { ...state, maxShots: action.payload };
     case "setHoles":
-      return { ...state, holes: parseInt(action.payload) };
+      return { ...state, holes: action.payload };
     case "resetForm":
       return { ...initialNewGameState };
     default:
@@ -52,8 +52,8 @@ type InputAction =
   | { type: "setDescription"; payload: string }
   | { type: "setLocation"; payload: string }
   | { type: "setDate"; payload: string }
-  | { type: "setMaxShots"; payload: string }
-  | { type: "setHoles"; payload: string };
+  | { type: "setMaxShots"; payload: number }
+  | { type: "setHoles"; payload: number };
 
 type Action =
   | { type: "addPlayer"; payload: string }

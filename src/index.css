@@ -38,6 +38,10 @@ body,
   margin: 0;
 }
 
+body {
+  overflow-y: scroll;
+}
+
 #app {
   background-color: var(--main-background-colour);
   height: 100%;
