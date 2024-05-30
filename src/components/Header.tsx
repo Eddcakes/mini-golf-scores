@@ -1,9 +1,8 @@
 import { useContext } from "react";
-import { Link } from "@tanstack/react-router";
-import { IconButton, useColorMode } from "@chakra-ui/react";
+import { Box, HStack, IconButton, useColorMode } from "@chakra-ui/react";
 import { Moon, Sun } from "./icons";
 import { ThemeContext } from "../context/Theme";
-import "./Header.css";
+import { Navigation } from "./Navigation";
 
 export const Header = () => {
   const { theme, toggleTheme } = useContext(ThemeContext);
@@ -15,15 +14,22 @@ export const Header = () => {
     console.log(`custom theme: ${theme}, chakra theme: ${colorMode}`);
   };
   return (
-    <header className="header">
+    <Box
+      as="header"
+      backgroundColor="var(--main-banner-colour)"
+      color="var(--white)"
+      height={{ base: "3em", md: "4rem" }}
+      display="flex"
+      justifyContent="space-between"
+      alignItems="center"
+    >
       <div>home</div>
-      <div>
-        <Link to="/">Home</Link>
-        <Link to="/game">Games</Link>
-        <Link to="/about">About</Link>
-        <Link to="/prague">Prague</Link>
-      </div>
-      <div className="controls">
+      <Navigation />
+      <HStack p={2}>
+        {/* 
+           <Input placeholder="search" />
+          */}
+
         <IconButton
           aria-label={
             theme === "dark" ? "Switch to light mode" : "Switch to dark mode"
@@ -32,7 +38,7 @@ export const Header = () => {
           variant="transparent"
           onClick={toggleBothThemes}
         />
-      </div>
-    </header>
+      </HStack>
+    </Box>
   );
 };

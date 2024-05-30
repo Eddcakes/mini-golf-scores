@@ -11,6 +11,7 @@
   --main-banner-colour: rgba(234, 132, 117, 1);
   --white-alpha: rgba(255, 255, 255, 0.08);
   --overlay-alpha: rgba(0, 0, 0, 0.5);
+  --bottom-nav-height: 5rem;
   font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Roboto", "Oxygen",
     "Ubuntu", "Cantarell", "Fira Sans", "Droid Sans", "Helvetica Neue",
     sans-serif;
@@ -50,10 +51,6 @@ body {
 code {
   font-family: source-code-pro, Menlo, Monaco, Consolas, "Courier New",
     monospace;
-}
-
-main {
-  padding: 2rem;
 }
 
 .wrapper {
