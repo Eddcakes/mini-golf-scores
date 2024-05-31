@@ -43,6 +43,8 @@ export type IDBRecord = {
   [key: string]: IDBProperties;
 };
 
+/* add colourmapping so we can make use of it with charts, linked to playerList */
+
 export type IDBProperties = {
   description: string;
   location: string;

@@ -1,14 +1,17 @@
 import { useRef, useState } from "react";
 import { Legend } from "../../components/charts/Legend";
-import golfData from "../../assets/data.json";
 import useResizeObserver from "../../hooks/useResizeObserver";
 import { LineChart } from "../../components/charts/LineChart";
 import { Settings } from "../../components/charts/Settings";
+import { IScore } from "../../models/data";
 
-export function ChartWrapper() {
+interface ChartWrapperProps {
+  data: IScore[];
+}
+
+export function ChartWrapper({ data }: ChartWrapperProps) {
   const wrapperRef = useRef<HTMLDivElement>(null);
   const { height, width } = useResizeObserver(wrapperRef);
-  const data = golfData;
   const legendData = [...new Set(data.map((data) => data.name))];
   const [showing, setShowing] = useState<string[]>(legendData);
   const onChangeShowing = (name: string) => {
