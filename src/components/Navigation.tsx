@@ -4,7 +4,7 @@ import {
   PlusSquareIcon,
   QuestionIcon,
 } from "@chakra-ui/icons";
-import { Box, List, ListItem } from "@chakra-ui/react";
+import { Box, List, ListItem, Text } from "@chakra-ui/react";
 import { Link } from "@tanstack/react-router";
 
 export function Navigation() {
@@ -24,78 +24,65 @@ export function Navigation() {
       /* var(--main-banner-shadow) */
       height={{ base: "var(--bottom-nav-height)", md: "auto" }}
     >
-      <List display="flex" gap={6}>
+      <List display="flex" justifyContent="space-evenly" width="100%">
         <ListItem>
-          <Box
-            as={Link}
+          <NavLink
             to="/"
-            activeProps={{ className: "active" }}
-            display="flex"
-            flexDirection="column"
-            justifyContent="center"
-            alignItems="center"
-            __css={{
-              "&.active svg, &.active span": { color: "var(--primary-colour)" },
-            }}
-          >
-            <CalendarIcon display={{ md: "none" }} />
-            <span>Home</span>
-          </Box>
+            text="Home"
+            icon={<CalendarIcon display={{ md: "none" }} />}
+          />
         </ListItem>
         <ListItem>
-          <Box
-            as={Link}
+          <NavLink
             to="/game/"
-            activeProps={{ className: "active" }}
-            display="flex"
-            flexDirection="column"
-            justifyContent="center"
-            alignItems="center"
-            __css={{
-              "&.active svg, &.active span": { color: "var(--primary-colour)" },
-            }}
-          >
-            <PlusSquareIcon display={{ md: "none" }} />
-            <span>All games</span>
-          </Box>
+            text="All games"
+            icon={<PlusSquareIcon display={{ md: "none" }} />}
+          />
         </ListItem>
         <ListItem>
-          <Box
-            as={Link}
+          <NavLink
             to="/about"
-            activeProps={{ className: "active" }}
-            display="flex"
-            flexDirection="column"
-            justifyContent="center"
-            alignItems="center"
-            __css={{
-              "&.active svg, &.active span": { color: "var(--primary-colour)" },
-            }}
-          >
-            <QuestionIcon display={{ md: "none" }} />
-            <span>About</span>
-          </Box>
+            text="About"
+            icon={<QuestionIcon display={{ md: "none" }} />}
+          />
         </ListItem>
         <ListItem>
-          <Box
-            as={Link}
+          <NavLink
             to="/prague"
-            activeProps={{
-              className: "active",
-            }}
-            display="flex"
-            flexDirection="column"
-            justifyContent="center"
-            alignItems="center"
-            __css={{
-              "&.active svg, &.active span": { color: "var(--primary-colour)" },
-            }}
-          >
-            <ExternalLinkIcon display={{ md: "none" }} />
-            <span>Prague</span>
-          </Box>
+            text="Prague"
+            icon={<ExternalLinkIcon display={{ md: "none" }} />}
+          />
         </ListItem>
       </List>
+    </Box>
+  );
+}
+
+interface NavLinkProps {
+  to: string /* loses tanstack typescript definition */;
+  text: string;
+  icon: React.ReactNode;
+}
+
+function NavLink({ to, text, icon }: NavLinkProps) {
+  return (
+    <Box
+      as={Link}
+      to={to}
+      activeProps={{ className: "active" }}
+      display="flex"
+      flexDirection="column"
+      justifyContent="center"
+      alignItems="center"
+      p={4}
+      __css={{
+        "&.active svg, &.active span": { color: "var(--primary-colour)" },
+      }}
+    >
+      {icon}
+      <Text as="span" fontWeight="semibold" letterSpacing="1px">
+        {text}
+      </Text>
     </Box>
   );
 }

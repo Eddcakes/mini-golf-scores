@@ -1,3 +1,4 @@
+import { Icon } from "@chakra-ui/react";
 import "./index.css";
 
 export const Moon = () => {
@@ -59,5 +60,24 @@ export const Cog = () => {
         d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"
       />
     </svg>
+  );
+};
+
+export const Logo = () => {
+  return (
+    <Icon
+      viewBox="0 0 24 24"
+      fill="#ffc394"
+      stroke="currentcolor"
+      transform="rotate(20deg)"
+      fontSize="3rem"
+    >
+      <path
+        strokeLinecap="round"
+        strokeLinejoin="round"
+        strokeWidth="2"
+        d="M13 10V3L4 14h7v7l9-11h-7z"
+      />
+    </Icon>
   );
 };

@@ -1,6 +1,7 @@
 import { useContext } from "react";
 import { Box, HStack, IconButton, useColorMode } from "@chakra-ui/react";
-import { Moon, Sun } from "./icons";
+import { Link } from "@tanstack/react-router";
+import { Logo, Moon, Sun } from "./icons";
 import { ThemeContext } from "../context/Theme";
 import { Navigation } from "./Navigation";
 
@@ -23,7 +24,10 @@ export const Header = () => {
       justifyContent="space-between"
       alignItems="center"
     >
-      <div>home</div>
+      <Link to="/">
+        <Logo />
+      </Link>
+
       <Navigation />
       <HStack p={2}>
         {/* 
