@@ -1,11 +1,7 @@
-import {
-  CalendarIcon,
-  ExternalLinkIcon,
-  PlusSquareIcon,
-  QuestionIcon,
-} from "@chakra-ui/icons";
+import { InfoIcon } from "@chakra-ui/icons";
 import { Box, List, ListItem, Text } from "@chakra-ui/react";
 import { Link } from "@tanstack/react-router";
+import { ChartIcon, ListIcon, SparklesIcon } from "./icons";
 
 export function Navigation() {
   return (
@@ -21,36 +17,35 @@ export function Navigation() {
       zIndex="5"
       backgroundColor={{ base: "var(--main-banner-colour)", md: "transparent" }}
       boxShadow={{ base: "0 -3px 10px rgba(0, 0, 0, 0.2)", md: "none" }}
-      /* var(--main-banner-shadow) */
       height={{ base: "var(--bottom-nav-height)", md: "auto" }}
     >
       <List display="flex" justifyContent="space-evenly" width="100%">
         <ListItem>
           <NavLink
             to="/"
-            text="Home"
-            icon={<CalendarIcon display={{ md: "none" }} />}
+            text="New"
+            icon={<SparklesIcon display={{ md: "none" }} fontSize="1.5rem" />}
           />
         </ListItem>
         <ListItem>
           <NavLink
             to="/game/"
-            text="All games"
-            icon={<PlusSquareIcon display={{ md: "none" }} />}
-          />
-        </ListItem>
-        <ListItem>
-          <NavLink
-            to="/about"
-            text="About"
-            icon={<QuestionIcon display={{ md: "none" }} />}
+            text="Scores"
+            icon={<ListIcon display={{ md: "none" }} fontSize="1.5rem" />}
           />
         </ListItem>
         <ListItem>
           <NavLink
             to="/prague"
             text="Prague"
-            icon={<ExternalLinkIcon display={{ md: "none" }} />}
+            icon={<ChartIcon display={{ md: "none" }} fontSize="1.5rem" />}
+          />
+        </ListItem>
+        <ListItem>
+          <NavLink
+            to="/about"
+            text="About"
+            icon={<InfoIcon display={{ md: "none" }} fontSize="1.5rem" />}
           />
         </ListItem>
       </List>
@@ -74,7 +69,7 @@ function NavLink({ to, text, icon }: NavLinkProps) {
       flexDirection="column"
       justifyContent="center"
       alignItems="center"
-      p={4}
+      px={4}
       __css={{
         "&.active svg, &.active span": { color: "var(--primary-colour)" },
       }}

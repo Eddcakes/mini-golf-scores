@@ -2,6 +2,7 @@
   --main-background-colour: rgb(250, 248, 247);
   --primary-colour: rgba(203, 72, 49, 1);
   --primary-shadow: rgba(255, 167, 138, 1);
+  /* 0 -3px 10px rgba(0, 0, 0, 0.2) */
   --primary-colour-dark: rgba(255, 90, 61, 1);
   --accent-colour: rgba(245, 204, 198, 1);
   --main-text-colour: rgba(25, 16, 12, 1);
