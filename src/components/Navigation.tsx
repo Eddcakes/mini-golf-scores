@@ -1,7 +1,7 @@
 import { InfoIcon } from "@chakra-ui/icons";
 import { Box, List, ListItem, Text } from "@chakra-ui/react";
 import { Link } from "@tanstack/react-router";
-import { ChartIcon, ListIcon, SparklesIcon } from "./icons";
+import { ListIcon, SparklesIcon } from "./icons";
 
 export function Navigation() {
   return (
@@ -20,28 +20,21 @@ export function Navigation() {
       height={{ base: "var(--bottom-nav-height)", md: "auto" }}
     >
       <List display="flex" justifyContent="space-evenly" width="100%">
-        <ListItem>
+        <ListItem flexGrow={1}>
           <NavLink
             to="/"
             text="New"
             icon={<SparklesIcon display={{ md: "none" }} fontSize="1.5rem" />}
           />
         </ListItem>
-        <ListItem>
+        <ListItem flexGrow={1}>
           <NavLink
             to="/game/"
             text="Results"
             icon={<ListIcon display={{ md: "none" }} fontSize="1.5rem" />}
           />
         </ListItem>
-        <ListItem>
-          <NavLink
-            to="/prague"
-            text="Prague"
-            icon={<ChartIcon display={{ md: "none" }} fontSize="1.5rem" />}
-          />
-        </ListItem>
-        <ListItem>
+        <ListItem flexGrow={1}>
           <NavLink
             to="/about"
             text="About"

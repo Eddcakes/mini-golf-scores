@@ -1,15 +1,14 @@
 import { createLazyFileRoute } from "@tanstack/react-router";
-import { List, ListItem } from "@chakra-ui/react";
+import {
+  Alert,
+  AlertDescription,
+  AlertIcon,
+  Box,
+  HStack,
+  VStack,
+} from "@chakra-ui/react";
 import { Link } from "../../components/Link";
 import { useTitle } from "../../hooks/useTitle";
-import {
-  ChartIcon,
-  SparklesIcon,
-  HomeIcon,
-  PlusCircleIcon,
-  ListIcon,
-  InfoIcon,
-} from "../../components/icons";
 
 export const Route = createLazyFileRoute("/_layout/about")({
   component: About,
@@ -19,31 +18,22 @@ function About() {
   useTitle("About");
   return (
     <div>
-      <div>
-        This site uses your browsers local storage, so your data will only be
-        available on this browser unless you <Link to="/settings">export</Link>{" "}
-        your games
-      </div>
-      <List>
-        <ListItem fontSize="3rem">
-          <SparklesIcon />
-        </ListItem>
-        <ListItem fontSize="3rem">
-          <ChartIcon />
-        </ListItem>
-        <ListItem fontSize="3rem">
-          <HomeIcon />
-        </ListItem>
-        <ListItem fontSize="3rem">
-          <PlusCircleIcon />
-        </ListItem>
-        <ListItem fontSize="3rem">
-          <ListIcon />
-        </ListItem>
-        <ListItem fontSize="3rem">
-          <InfoIcon />
-        </ListItem>
-      </List>
+      <Alert status="info">
+        <VStack>
+          <HStack>
+            <AlertIcon />
+          </HStack>
+          <AlertDescription>
+            This site uses your browsers local storage, so your data will only
+            be available on this browser unless you{" "}
+            <Link to="/settings">export</Link> your games.
+          </AlertDescription>
+        </VStack>
+      </Alert>
+      <Box p={4}>
+        Originally created to plray with d3 to chart out scores for a mini golf
+        game in <Link to="/prague">prague.</Link>
+      </Box>
     </div>
   );
 }

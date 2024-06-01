@@ -1,13 +1,12 @@
-import { Link } from "@tanstack/react-router";
 import {
   Alert,
   AlertDescription,
   AlertIcon,
   AlertTitle,
-  Link as ChakraLink,
   HStack,
   VStack,
 } from "@chakra-ui/react";
+import { Link } from "../Link";
 
 export function GameNotFound() {
   return (
@@ -20,9 +19,7 @@ export function GameNotFound() {
         <AlertDescription>
           Remember, game data is stored locally in your browser, so if you are
           trying a link from another person or another device you will need to{" "}
-          <ChakraLink to="/settings" textDecoration="underline" as={Link}>
-            import their game data
-          </ChakraLink>
+          <Link to="/settings">import their game data</Link>
         </AlertDescription>
       </VStack>
     </Alert>

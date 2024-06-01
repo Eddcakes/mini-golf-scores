@@ -51,6 +51,9 @@ function GameList() {
   });
   return (
     <VStack>
+      <Text fontSize="sm" fontWeight="medium" textAlign="center">
+        Open the game to the scores page or chart
+      </Text>
       <HStack {...getRootProps()}>
         {gameOrChart.map((option) => {
           return (

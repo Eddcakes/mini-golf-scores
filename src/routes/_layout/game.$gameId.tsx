@@ -137,7 +137,7 @@ function Game() {
     }
   };
   return (
-    <Box maxW={{ md: "40rem" }} margin={{ md: "auto" }}>
+    <Box>
       <DescriptionAccordion game={data} updateDetails={publishDetails} />
       {!data.complete && (
         <Text fontSize="sm" fontWeight="medium" textAlign="center" p={2}>
