@@ -30,7 +30,7 @@ export function Navigation() {
         <ListItem>
           <NavLink
             to="/game/"
-            text="Scores"
+            text="Results"
             icon={<ListIcon display={{ md: "none" }} fontSize="1.5rem" />}
           />
         </ListItem>

@@ -1,6 +1,7 @@
 import { useContext } from "react";
+import { Link, useRouter } from "@tanstack/react-router";
 import { Box, HStack, IconButton, useColorMode } from "@chakra-ui/react";
-import { Link } from "@tanstack/react-router";
+import { ArrowBackIcon } from "@chakra-ui/icons";
 import { Logo, Moon, Sun } from "./icons";
 import { ThemeContext } from "../context/Theme";
 import { Navigation } from "./Navigation";
@@ -8,6 +9,7 @@ import { Navigation } from "./Navigation";
 export const Header = () => {
   const { theme, toggleTheme } = useContext(ThemeContext);
   const { colorMode, toggleColorMode } = useColorMode();
+  const { history } = useRouter();
   // temporary until everything is chakra components
   const toggleBothThemes = () => {
     toggleTheme();
@@ -24,11 +26,19 @@ export const Header = () => {
       justifyContent="space-between"
       alignItems="center"
     >
-      <Link to="/">
-        <Logo />
-      </Link>
-
-      <Navigation />
+      <IconButton
+        marginStart={0}
+        aria-label="Go back"
+        onClick={() => history.back()}
+        icon={<ArrowBackIcon fontSize="1.5rem" />}
+        variant="transparent"
+      />
+      <HStack>
+        <Link to="/">
+          <Logo />
+        </Link>
+        <Navigation />
+      </HStack>
       <HStack p={2}>
         {/* 
            <Input placeholder="search" />

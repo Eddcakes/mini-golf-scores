@@ -28,6 +28,7 @@ import { RadioCard } from "../../components/RadioButton";
 export const Route = createFileRoute("/_layout/game/")({
   loader: async () => {
     const games: IDBRecord[] = await getAllGames();
+
     return games;
   },
   component: GameList,
@@ -41,10 +42,12 @@ const gameOrChart = [
 function GameList() {
   useTitle("All games");
   const games = Route.useLoaderData();
-  // save selected value to cookie/local storage?
   const { value, getRootProps, getRadioProps } = useRadioGroup({
     name: "gameOrChart",
-    defaultValue: gameOrChart[0].value,
+    defaultValue: localStorage.getItem("gameOrChart") ?? gameOrChart[0].value,
+    onChange: (value) => {
+      localStorage.setItem("gameOrChart", value);
+    },
   });
   return (
     <VStack>
