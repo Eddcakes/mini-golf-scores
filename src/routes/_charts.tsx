@@ -7,7 +7,6 @@ export const Route = createFileRoute("/_charts")({
 function LayoutComponent() {
   return (
     <div>
-      <h1>Charts</h1>
       <Outlet />
     </div>
   );

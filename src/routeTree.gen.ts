@@ -18,6 +18,7 @@ import { Route as ChartsImport } from './routes/_charts'
 import { Route as LayoutIndexImport } from './routes/_layout/index'
 import { Route as LayoutGameIndexImport } from './routes/_layout/game.index'
 import { Route as LayoutGameGameIdImport } from './routes/_layout/game.$gameId'
+import { Route as ChartsChartGameIdImport } from './routes/_charts/chart.$gameId'
 
 // Create Virtual Routes
 
@@ -71,6 +72,11 @@ const LayoutGameGameIdRoute = LayoutGameGameIdImport.update({
   getParentRoute: () => LayoutRoute,
 } as any)
 
+const ChartsChartGameIdRoute = ChartsChartGameIdImport.update({
+  path: '/chart/$gameId',
+  getParentRoute: () => ChartsRoute,
+} as any)
+
 // Populate the FileRoutesByPath interface
 
 declare module '@tanstack/react-router' {
@@ -117,6 +123,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof LayoutIndexImport
       parentRoute: typeof LayoutImport
     }
+    '/_charts/chart/$gameId': {
+      id: '/_charts/chart/$gameId'
+      path: '/chart/$gameId'
+      fullPath: '/chart/$gameId'
+      preLoaderRoute: typeof ChartsChartGameIdImport
+      parentRoute: typeof ChartsImport
+    }
     '/_layout/game/$gameId': {
       id: '/_layout/game/$gameId'
       path: '/game/$gameId'
@@ -137,7 +150,10 @@ declare module '@tanstack/react-router' {
 // Create and export the route tree
 
 export const routeTree = rootRoute.addChildren({
-  ChartsRoute: ChartsRoute.addChildren({ ChartsPragueLazyRoute }),
+  ChartsRoute: ChartsRoute.addChildren({
+    ChartsPragueLazyRoute,
+    ChartsChartGameIdRoute,
+  }),
   LayoutRoute: LayoutRoute.addChildren({
     LayoutAboutLazyRoute,
     LayoutSettingsLazyRoute,

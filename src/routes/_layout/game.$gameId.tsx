@@ -1,19 +1,8 @@
 import { useState } from "react";
+import { createFileRoute, notFound, useRouter } from "@tanstack/react-router";
 import {
-  Link,
-  createFileRoute,
-  notFound,
-  useRouter,
-} from "@tanstack/react-router";
-import {
-  Alert,
-  AlertDescription,
-  AlertIcon,
-  AlertTitle,
   Box,
   Button,
-  Link as ChakraLink,
-  HStack,
   Table,
   TableContainer,
   Tbody,
@@ -27,7 +16,6 @@ import {
   useDisclosure,
   useToast,
 } from "@chakra-ui/react";
-
 import { IDBProperties, getGame, setDetails, setScores } from "../../utils/idb";
 import {
   PlayerScore,
@@ -37,6 +25,8 @@ import {
 import { ScoreModal } from "../../components/game/ScoreModal";
 import { IScore } from "../../models/data";
 import { DescriptionAccordion } from "../../components/game/DescriptionAccordion";
+import { useTitle } from "../../hooks/useTitle";
+import { GameNotFound } from "../../components/game/NotFound";
 
 export const Route = createFileRoute("/_layout/game/$gameId")({
   loader: async ({ params }) => {
@@ -53,6 +43,7 @@ export const Route = createFileRoute("/_layout/game/$gameId")({
 function Game() {
   const { gameId } = Route.useParams();
   const data = Route.useLoaderData();
+  useTitle(`Game ${data.description || gameId}`);
   const router = useRouter();
   const { isOpen, onOpen, onClose } = useDisclosure();
   const toast = useToast();
@@ -146,7 +137,7 @@ function Game() {
     }
   };
   return (
-    <Box maxW={{ md: "40rem" }} margin={{ md: "auto" }}>
+    <Box>
       <DescriptionAccordion game={data} updateDetails={publishDetails} />
       {!data.complete && (
         <Text fontSize="sm" fontWeight="medium" textAlign="center" p={2}>
@@ -230,25 +221,5 @@ function Game() {
         maxShots={data.maxShots}
       />
     </Box>
-  );
-}
-
-function GameNotFound() {
-  return (
-    <Alert status="info">
-      <VStack>
-        <HStack>
-          <AlertIcon />
-          <AlertTitle>Hey, we cannot find that game.</AlertTitle>
-        </HStack>
-        <AlertDescription>
-          Remember, game data is stored locally in your browser, so if you are
-          trying a link from another person or another device you will need to{" "}
-          <ChakraLink to="/settings" textDecoration="underline" as={Link}>
-            import their game data
-          </ChakraLink>
-        </AlertDescription>
-      </VStack>
-    </Alert>
   );
 }

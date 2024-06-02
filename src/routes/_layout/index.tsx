@@ -4,6 +4,7 @@ import { NewGame } from "../../components/game/NewGame";
 import { getIncompleteGames } from "../../utils/idb";
 import { useEffect } from "react";
 import { GamesInProgressModal } from "../../components/GamesInProgressModal";
+import { useTitle } from "../../hooks/useTitle";
 
 export const Route = createFileRoute("/_layout/")({
   loader: async () => {
@@ -13,6 +14,7 @@ export const Route = createFileRoute("/_layout/")({
 });
 
 function Index() {
+  useTitle("New Scorecard");
   const incompleteGames = Route.useLoaderData();
   const { isOpen, onOpen, onClose } = useDisclosure();
 
