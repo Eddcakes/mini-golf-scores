@@ -1,5 +1,10 @@
 import { useState } from "react";
-import { createFileRoute, notFound, useRouter } from "@tanstack/react-router";
+import {
+  Link,
+  createFileRoute,
+  notFound,
+  useRouter,
+} from "@tanstack/react-router";
 import {
   Box,
   Button,
@@ -227,8 +232,16 @@ function Game() {
           </Tfoot>
         </Table>
       </TableContainer>
-      {!data.complete && (
-        <Box pt={2} textAlign="center">
+      <Box pt={2} textAlign="center">
+        {data.complete ? (
+          <Button
+            as={Link}
+            to={`/chart/${gameId}`}
+            width={{ base: "100%", md: "unset" }}
+          >
+            View as chart
+          </Button>
+        ) : (
           <Button
             onClick={handleFinish}
             width={{ base: "100%", md: "unset" }}
@@ -236,8 +249,8 @@ function Game() {
           >
             Finish!
           </Button>
-        </Box>
-      )}
+        )}
+      </Box>
       <ScoreModal
         updateScores={publishScores}
         scoreState={scoreState}
