@@ -9,5 +9,7 @@ export const Route = createLazyFileRoute("/_charts/prague")({
 
 function Prague() {
   useTitle("Stats");
-  return <ChartWrapper data={pragueScores} />;
+  return (
+    <ChartWrapper data={pragueScores} shotLimitPerHole={10} totalHoles={18} />
+  );
 }

@@ -23,7 +23,11 @@ function Chart() {
   useTitle(`Game ${data.description || gameId}`);
   return (
     <div>
-      <ChartWrapper data={data.scores} />
+      <ChartWrapper
+        data={data.scores}
+        shotLimitPerHole={data.maxShots}
+        totalHoles={data.holes}
+      />
       <Button as={Link} to={`/game/${gameId}`} colorScheme="orange">
         View scores
       </Button>

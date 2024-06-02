@@ -7,9 +7,15 @@ import { IScore } from "../../models/data";
 
 interface ChartWrapperProps {
   data: IScore[];
+  totalHoles: number;
+  shotLimitPerHole: number;
 }
 
-export function ChartWrapper({ data }: ChartWrapperProps) {
+export function ChartWrapper({
+  data,
+  totalHoles,
+  shotLimitPerHole,
+}: ChartWrapperProps) {
   const wrapperRef = useRef<HTMLDivElement>(null);
   const { height, width } = useResizeObserver(wrapperRef);
   const legendData = [...new Set(data.map((data) => data.name))];
@@ -54,6 +60,8 @@ export function ChartWrapper({ data }: ChartWrapperProps) {
             cumulative={cumulative}
             height={height}
             width={width}
+            shotLimitPerHole={shotLimitPerHole}
+            totalHoles={totalHoles}
           />
           <Settings
             wrapperRef={wrapperRef.current}

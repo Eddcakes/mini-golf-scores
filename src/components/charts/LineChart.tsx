@@ -14,6 +14,8 @@ interface LineChartProps {
   cumulative: boolean;
   width: number;
   height: number;
+  totalHoles: number;
+  shotLimitPerHole: number;
 }
 
 export function LineChart({
@@ -21,6 +23,8 @@ export function LineChart({
   cumulative = false,
   width,
   height,
+  totalHoles,
+  shotLimitPerHole,
 }: LineChartProps) {
   const overlayRef = useRef<SVGRectElement>(null);
   const scrollBreakpoint = 770;
@@ -28,9 +32,9 @@ export function LineChart({
   const svgWidth = width < scrollBreakpoint ? 1200 : width;
   const svgHeight = height;
   const minHole = 1;
-  const maxHole = 18;
+  const maxHole = totalHoles;
   const minShot = 0; // min<IScore, number>(data, (d) => d.score); //could -1
-  const maxShot = cumulative ? 100 : 10; // max<IScore, number>(data, (d) => d.score); //could + however many
+  const maxShot = cumulative ? shotLimitPerHole * totalHoles : shotLimitPerHole; // max<IScore, number>(data, (d) => d.score); //could + however many
   const xScale = getXScale(minHole, maxHole, svgWidth - margin);
   const yScale = getYScale(minShot, maxShot, svgHeight - margin);
 
