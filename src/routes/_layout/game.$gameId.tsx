@@ -54,6 +54,7 @@ function Game() {
     // set scores from idb data
     data.scores.forEach((record) => {
       arrayLike[record.hole - 1][record.name] = record.score;
+      arrayLike[record.hole - 1].__par = record.par;
     });
     return arrayLike;
   });
@@ -77,9 +78,12 @@ function Game() {
     const newScores: IScore[] = [];
     updatedScoreState.forEach((record, idx) => {
       const hole = idx + 1;
+      // if __par is added, it will come back in object .entries as a name
       Object.entries(record).forEach(([name, score]) => {
+        if (name === "__par") return;
         if (score == null) return;
         newScores.push({
+          par: record.__par ?? null,
           hole: hole,
           name: name,
           score: clamp(score, 0, data.maxShots),
@@ -150,7 +154,11 @@ function Game() {
             <Tr>
               <Th>Hole</Th>
               {data.playerList.map((player) => {
-                return <Th key={player}>{player}</Th>;
+                return (
+                  <Th key={player} textAlign="center">
+                    {player}
+                  </Th>
+                );
               })}
             </Tr>
           </Thead>
@@ -158,17 +166,35 @@ function Game() {
             {scoreState.map((hole, idx) => {
               return (
                 <Tr key={idx}>
-                  <Td>hole {idx + 1}</Td>
+                  <Td>
+                    <Box display="flex" flexDirection="column">
+                      <span>hole {idx + 1}</span>
+                      {hole?.__par && hole.__par > 0 ? (
+                        <Text
+                          as="span"
+                          fontSize="xs"
+                          fontWeight="bold"
+                          textTransform="uppercase"
+                          color="gray.400"
+                        >
+                          par {hole.__par}
+                        </Text>
+                      ) : null}
+                    </Box>
+                  </Td>
                   {
                     // could do Object.keys() ES2015^ does keep insertion order
                     data.playerList.map((player) => {
                       return data.complete ? (
-                        <Td key={player}>{hole[player] || "-"}</Td>
+                        <Td key={player} textAlign="center">
+                          {hole[player] || "-"}
+                        </Td>
                       ) : (
                         <Td
                           key={player}
                           role="button"
                           onClick={() => openScoreModal(idx)}
+                          textAlign="center"
                         >
                           {hole[player] || "-"}
                         </Td>
