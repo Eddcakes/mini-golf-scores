@@ -17,6 +17,7 @@ import { Route as LayoutImport } from './routes/_layout'
 import { Route as ChartsImport } from './routes/_charts'
 import { Route as LayoutIndexImport } from './routes/_layout/index'
 import { Route as LayoutGameIndexImport } from './routes/_layout/game.index'
+import { Route as LayoutSettingsExportImport } from './routes/_layout/settings.export'
 import { Route as LayoutGameGameIdImport } from './routes/_layout/game.$gameId'
 import { Route as ChartsChartGameIdImport } from './routes/_charts/chart.$gameId'
 
@@ -25,6 +26,9 @@ import { Route as ChartsChartGameIdImport } from './routes/_charts/chart.$gameId
 const LayoutSettingsLazyImport = createFileRoute('/_layout/settings')()
 const LayoutAboutLazyImport = createFileRoute('/_layout/about')()
 const ChartsPragueLazyImport = createFileRoute('/_charts/prague')()
+const LayoutSettingsImportLazyImport = createFileRoute(
+  '/_layout/settings/import',
+)()
 
 // Create/Update Routes
 
@@ -65,6 +69,18 @@ const ChartsPragueLazyRoute = ChartsPragueLazyImport.update({
 const LayoutGameIndexRoute = LayoutGameIndexImport.update({
   path: '/game/',
   getParentRoute: () => LayoutRoute,
+} as any)
+
+const LayoutSettingsImportLazyRoute = LayoutSettingsImportLazyImport.update({
+  path: '/import',
+  getParentRoute: () => LayoutSettingsLazyRoute,
+} as any).lazy(() =>
+  import('./routes/_layout/settings.import.lazy').then((d) => d.Route),
+)
+
+const LayoutSettingsExportRoute = LayoutSettingsExportImport.update({
+  path: '/export',
+  getParentRoute: () => LayoutSettingsLazyRoute,
 } as any)
 
 const LayoutGameGameIdRoute = LayoutGameGameIdImport.update({
@@ -137,6 +153,20 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof LayoutGameGameIdImport
       parentRoute: typeof LayoutImport
     }
+    '/_layout/settings/export': {
+      id: '/_layout/settings/export'
+      path: '/export'
+      fullPath: '/settings/export'
+      preLoaderRoute: typeof LayoutSettingsExportImport
+      parentRoute: typeof LayoutSettingsLazyImport
+    }
+    '/_layout/settings/import': {
+      id: '/_layout/settings/import'
+      path: '/import'
+      fullPath: '/settings/import'
+      preLoaderRoute: typeof LayoutSettingsImportLazyImport
+      parentRoute: typeof LayoutSettingsLazyImport
+    }
     '/_layout/game/': {
       id: '/_layout/game/'
       path: '/game/'
@@ -156,7 +186,10 @@ export const routeTree = rootRoute.addChildren({
   }),
   LayoutRoute: LayoutRoute.addChildren({
     LayoutAboutLazyRoute,
-    LayoutSettingsLazyRoute,
+    LayoutSettingsLazyRoute: LayoutSettingsLazyRoute.addChildren({
+      LayoutSettingsExportRoute,
+      LayoutSettingsImportLazyRoute,
+    }),
     LayoutIndexRoute,
     LayoutGameGameIdRoute,
     LayoutGameIndexRoute,
