@@ -56,7 +56,7 @@ export function LineChart({
           axisType="y"
           scale={yScale}
           ticks={(cumulative ? 10 : maxShot) / 2}
-          disableAnimation={false}
+          disableAnimation={true}
           transform=""
         />
       </svg>
@@ -80,7 +80,7 @@ export function LineChart({
               axisType="x"
               scale={xScale}
               ticks={maxHole}
-              disableAnimation={false}
+              disableAnimation={true}
               // why doesn't this work
               // .attr("transform", `translateY(${dims.height}px)`)
               transform={`translate(0, ${svgHeight - margin})`}
