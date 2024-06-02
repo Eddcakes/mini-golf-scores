@@ -27,6 +27,7 @@ function Chart() {
         data={data.scores}
         shotLimitPerHole={data.maxShots}
         totalHoles={data.holes}
+        playerList={data.playerList}
       />
       <Button as={Link} to={`/game/${gameId}`} colorScheme="orange">
         View scores

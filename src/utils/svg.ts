@@ -1,13 +1,4 @@
-export const mapColors = [
-  { name: "MG", color: "#FABC2A" },
-  { name: "RYAN", color: "#F05365" },
-  { name: "MARC", color: "#880044" },
-  { name: "JAMES", color: "#255C99" },
-  { name: "MD", color: "#F8F272" },
-  { name: "EDD", color: "#00CC99" },
-  { name: "PAUL", color: "#C8963E" },
-];
+import { Player } from "../components/game/model";
 
-export const colorDictionary = Object.fromEntries(
-  mapColors.map((person) => [[person.name], person.color])
-);
+export const createColorDictionary = (playerList: Player[]) =>
+  Object.fromEntries(playerList.map((person) => [[person.name], person.color]));

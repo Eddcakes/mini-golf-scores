@@ -4,9 +4,10 @@ import { splitIntoDatasets } from "../../utils/data";
 import { getXScale, getYScale } from "../../utils/charts";
 import { Axis } from "./Grid";
 import { AnimationType, Line } from "./Line";
-import { colorDictionary } from "../../utils/svg";
+import { createColorDictionary } from "../../utils/svg";
 import { Overlay } from "./Overlay";
 import { Tooltip } from "./Tooltip";
+import { Player } from "../game/model";
 import "./LineChart.css";
 
 interface LineChartProps {
@@ -16,6 +17,7 @@ interface LineChartProps {
   height: number;
   totalHoles: number;
   shotLimitPerHole: number;
+  playerList: Player[];
 }
 
 export function LineChart({
@@ -25,6 +27,7 @@ export function LineChart({
   height,
   totalHoles,
   shotLimitPerHole,
+  playerList,
 }: LineChartProps) {
   const overlayRef = useRef<SVGRectElement>(null);
   const scrollBreakpoint = 770;
@@ -37,6 +40,7 @@ export function LineChart({
   const maxShot = cumulative ? shotLimitPerHole * totalHoles : shotLimitPerHole; // max<IScore, number>(data, (d) => d.score); //could + however many
   const xScale = getXScale(minHole, maxHole, svgWidth - margin);
   const yScale = getYScale(minShot, maxShot, svgHeight - margin);
+  const colorDictionary = createColorDictionary(playerList);
 
   let data: IScore[] = [];
   if (cumulative) {
@@ -97,6 +101,7 @@ export function LineChart({
               width={width}
               xScale={xScale}
               yScale={yScale}
+              colorDictionary={colorDictionary}
             />
           </Overlay>
         </svg>

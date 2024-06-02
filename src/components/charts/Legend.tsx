@@ -1,5 +1,5 @@
 import { Button } from "@chakra-ui/react";
-import { mapColors } from "../../utils/svg";
+import { Player } from "../game/model";
 import "./Legend.css";
 
 interface LegendProps {
@@ -7,6 +7,7 @@ interface LegendProps {
   showing: string[];
   onChange: (name: string) => void;
   toggleShowingAll: () => void;
+  playerList: Player[];
 }
 
 export const Legend = ({
@@ -14,6 +15,7 @@ export const Legend = ({
   showing,
   onChange,
   toggleShowingAll,
+  playerList,
 }: LegendProps) => {
   return (
     <div className="legend">
@@ -32,7 +34,7 @@ export const Legend = ({
                 onChange={() => onChange(d)}
                 style={{
                   accentColor:
-                    mapColors.find((c) => c.name === d)?.color || "#000",
+                    playerList.find((c) => c.name === d)?.color || "#000",
                 }}
               />
               {d}
