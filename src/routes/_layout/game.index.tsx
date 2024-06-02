@@ -14,8 +14,6 @@ import {
   Text,
   Wrap,
   WrapItem,
-  Tag,
-  TagLabel,
   useRadioGroup,
   HStack,
   Box,
@@ -23,6 +21,8 @@ import {
 import { getAllGames, IDBRecord } from "../../utils/idb";
 import { useTitle } from "../../hooks/useTitle";
 import { RadioCard } from "../../components/RadioButton";
+import { NoGamesFound } from "../../components/game/NotFound";
+import { PlayerTag } from "../../components/PlayerTag";
 
 // eslint-disable-next-line @typescript-eslint/ban-ts-comment
 // @ts-ignore
@@ -50,6 +50,9 @@ function GameList() {
       localStorage.setItem("gameOrChart", value);
     },
   });
+  if (games.length < 1) {
+    return <NoGamesFound />;
+  }
   return (
     <VStack>
       <Text fontSize="sm" fontWeight="medium" textAlign="center">
@@ -115,9 +118,7 @@ function GameList() {
                       {playerList.map((player, index) => {
                         return (
                           <WrapItem key={`${player}-${index}`}>
-                            <Tag colorScheme="orange" borderRadius="full">
-                              <TagLabel>{player}</TagLabel>
-                            </Tag>
+                            <PlayerTag player={player} />
                           </WrapItem>
                         );
                       })}

@@ -13,8 +13,6 @@ import {
   Table,
   TableCaption,
   TableContainer,
-  Tag,
-  TagLabel,
   Tbody,
   Td,
   Text,
@@ -26,6 +24,7 @@ import {
   WrapItem,
 } from "@chakra-ui/react";
 import { IDBRecord } from "../utils/idb";
+import { PlayerTag } from "./PlayerTag";
 
 interface GamesInProgressModalProps {
   isOpen: boolean;
@@ -92,10 +91,8 @@ export function GamesInProgressModal({
                           <Wrap spacing={4}>
                             {playerList.map((player, index) => {
                               return (
-                                <WrapItem key={`${player}-${index}`}>
-                                  <Tag colorScheme="orange" borderRadius="full">
-                                    <TagLabel>{player}</TagLabel>
-                                  </Tag>
+                                <WrapItem key={`${player.name}-${index}`}>
+                                  <PlayerTag player={player} />
                                 </WrapItem>
                               );
                             })}

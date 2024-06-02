@@ -6,7 +6,7 @@
   "maxShots": 10,
   "holes": 18,
   "complete": false,
-  "playerList": ["edd"],
+  "playerList": [{ "name": "edd", "color": "#00CC99" }],
   "data": [{ "name": "edd", "hole": 1, "score": 3 }],
   "created": "2017-01-01T00:00:00+00:00",
   "updated": "2017-01-01T00:00:00+00:00"

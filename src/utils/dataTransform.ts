@@ -1,12 +1,17 @@
+import { PlayerList } from "../models/data";
+
 export interface PlayerScore {
   [key: string]: number | null;
 }
 
-export const createScoreTableArray = (holes: number, playerList: string[]) => {
+export const createScoreTableArray = (
+  holes: number,
+  playerList: PlayerList
+) => {
   return Array.from(Array(holes).keys()).map(() => {
     const playerScore: PlayerScore = {};
     playerList.forEach((player) => {
-      playerScore[player] = null;
+      playerScore[player.name] = null;
     });
     return playerScore;
   });

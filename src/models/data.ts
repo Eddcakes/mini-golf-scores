@@ -9,3 +9,10 @@ export interface IDataset {
   label: string;
   data: IScore[];
 }
+
+interface Player {
+  name: string;
+  color: string;
+}
+
+export type PlayerList = Player[];

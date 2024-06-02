@@ -5,7 +5,7 @@ export function newGameReducer(state: FormState, action: Action): FormState {
     case "removePlayer":
       return {
         ...state,
-        players: state.players.filter((p) => p !== action.payload),
+        players: state.players.filter((p) => p.name !== action.payload),
       };
     case "setCurrentPlayer":
       return { ...state, currentPlayer: action.payload };
@@ -34,17 +34,22 @@ export const initialNewGameState = {
   date: new Date().toISOString().split("T")[0],
   maxShots: 10,
   currentPlayer: "",
-  holes: 0,
+  holes: 9,
 };
 
 interface FormState {
-  players: string[];
+  players: Player[];
   description: string;
   location: string;
   date: string;
   maxShots: number;
   currentPlayer: string;
   holes: number;
+}
+
+export interface Player {
+  name: string;
+  color: string;
 }
 
 type InputAction =
@@ -56,7 +61,7 @@ type InputAction =
   | { type: "setHoles"; payload: number };
 
 type Action =
-  | { type: "addPlayer"; payload: string }
+  | { type: "addPlayer"; payload: Player }
   | { type: "removePlayer"; payload: string }
   | { type: "resetForm"; payload: null }
   | InputAction;

@@ -6,7 +6,11 @@ import {
 
 describe("createScoreTableArray", () => {
   const holes = 3;
-  const playerList = ["one", "two", "test"];
+  const playerList = [
+    { name: "one", color: "#f00" },
+    { name: "two", color: "f00" },
+    { name: "test", color: "#f00" },
+  ];
   const result = [
     {
       one: null,

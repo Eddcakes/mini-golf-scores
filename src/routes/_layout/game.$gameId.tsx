@@ -65,7 +65,8 @@ function Game() {
   });
   const totalScores = scoreState.reduce((accumulator, hole) => {
     data.playerList.forEach((player) => {
-      accumulator[player] = (accumulator[player] || 0) + (hole[player] || 0);
+      accumulator[player.name] =
+        (accumulator[player.name] || 0) + (hole[player.name] || 0);
     });
     return accumulator;
   }, {});
@@ -160,8 +161,8 @@ function Game() {
               <Th>Hole</Th>
               {data.playerList.map((player) => {
                 return (
-                  <Th key={player} textAlign="center">
-                    {player}
+                  <Th key={player.name} textAlign="center">
+                    {player.name}
                   </Th>
                 );
               })}
@@ -191,17 +192,17 @@ function Game() {
                     // could do Object.keys() ES2015^ does keep insertion order
                     data.playerList.map((player) => {
                       return data.complete ? (
-                        <Td key={player} textAlign="center">
-                          {hole[player] || "-"}
+                        <Td key={player.name} textAlign="center">
+                          {hole[player.name] || "-"}
                         </Td>
                       ) : (
                         <Td
-                          key={player}
+                          key={player.name}
                           role="button"
                           onClick={() => openScoreModal(idx)}
                           textAlign="center"
                         >
-                          {hole[player] || "-"}
+                          {hole[player.name] || "-"}
                         </Td>
                       );
                     })
@@ -220,10 +221,10 @@ function Game() {
               </Th>
               {data.playerList.map((player) => {
                 return (
-                  <Th key={player}>
+                  <Th key={player.name}>
                     <VStack>
-                      <span>{player}</span>
-                      <span>{totalScores[player]}</span>
+                      <span>{player.name}</span>
+                      <span>{totalScores[player.name]}</span>
                     </VStack>
                   </Th>
                 );

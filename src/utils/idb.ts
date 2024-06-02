@@ -1,5 +1,6 @@
 import { entries, get, set } from "idb-keyval";
 import { IScore } from "../models/data";
+import { Player } from "../components/game/model";
 
 type NewGame = {
   description: string;
@@ -7,7 +8,7 @@ type NewGame = {
   date: string;
   maxShots: number;
   holes: number;
-  playerList: string[];
+  playerList: Player[];
 };
 
 type RecordResponse = {
@@ -29,10 +30,16 @@ export async function createRecord(data: NewGame): Promise<RecordResponse> {
     updated: timeStamp,
     complete: false,
   };
-  const uuid = self.crypto.randomUUID();
-  return set(uuid, record)
+  let unique: string;
+  if (window.isSecureContext) {
+    unique = self.crypto.randomUUID();
+  } else {
+    unique = `${Math.random().toString(36).substring(2, 15)}-${Math.random().toString(36).substring(2, 15)}`;
+  }
+
+  return set(unique, record)
     .then(() => {
-      return { success: true, message: uuid };
+      return { success: true, message: unique };
     })
     .catch((error) => {
       return { success: false, message: error };
@@ -51,7 +58,7 @@ export type IDBProperties = {
   date: string;
   maxShots: number;
   holes: number;
-  playerList: string[];
+  playerList: Player[];
   scores: IScore[];
   created: string;
   updated: string;

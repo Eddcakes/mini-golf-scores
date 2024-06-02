@@ -190,3 +190,17 @@ export const InfoIcon = (props: IconProps) => {
     </Icon>
   );
 };
+
+export const ColorChipIcon = (props: IconProps) => {
+  return (
+    <Icon
+      fill="currentColor"
+      viewBox="0 0 24 24"
+      strokeWidth={1.5}
+      stroke="currentColor"
+      {...props}
+    >
+      <circle cx={12} cy={12} r={9} />
+    </Icon>
+  );
+};
