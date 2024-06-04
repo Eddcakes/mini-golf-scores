@@ -30,34 +30,68 @@ function ImportModal() {
   const navigate = useNavigate();
   const fileRef = useRef<HTMLInputElement>(null);
   const [parsing, setParsing] = useState<boolean>(false);
+  const [parsingImport, setParsingImport] = useState<boolean>(false);
   const [errorMessages, setErrorMessages] = useState<ZodIssue[]>([]);
+  const [errorMessagesImport, setErrorMessagesImport] = useState<ZodIssue[]>(
+    []
+  );
   const [json, setJson] = useState<string>("");
   const handleClose = () => {
     navigate({ from: "/settings/export", to: `/settings` });
   };
-  const handleImport = () => {
-    /*
+  const handleImport = async () => {
+    // reset
+    setErrorMessagesImport([]);
     const file = fileRef.current?.files?.[0];
     if (!file) {
       return;
     }
-    const reader = new FileReader();
-    reader.onload = (e) => {
-      const content = e.target?.result;
-      try {
-        const data = JSON.parse(content as string);
-      } catch (error) {
+    setParsingImport(true);
+    const content = await reader(file);
+    try {
+      const data = JSON.parse(content as string);
+      const validate = zIdbRecordArray.safeParse(data);
+      if (validate.success) {
+        console.log("validating success");
+        const importRecords = await setImportRecords(data);
+        setParsingImport(false);
+        // check if import to indexedDb was successful
+        if (importRecords.success) {
+          toast({
+            title: "Data imported",
+            description: "Successfully imported data from file",
+            status: "success",
+            duration: 3000,
+            isClosable: true,
+          });
+        } else {
+          toast({
+            title: "Error importing data from file",
+            description: importRecords.message,
+            status: "error",
+            isClosable: true,
+          });
+        }
+      } else {
+        setParsingImport(false);
+        setErrorMessagesImport(validate.error.issues);
         toast({
-          title: "Invalid JSON",
+          title: "Invalid data",
+          description: "Please check to error message and correct the data",
           status: "error",
-          duration: 3000,
           isClosable: true,
         });
       }
-    };
-    reader.readAsText(file);
-    */
-    console.log("handle file import");
+    } catch (error) {
+      setParsingImport(false);
+      toast({
+        title: "Invalid JSON",
+        description: `${error}`,
+        status: "error",
+        duration: 3000,
+        isClosable: true,
+      });
+    }
   };
   const handlePasteIntoTextArea = () => {
     if (!navigator.clipboard) {
@@ -152,9 +186,17 @@ function ImportModal() {
             <VStack alignItems="start">
               <p>Import your data from another device</p>
               <Input type="file" accept="application/JSON" ref={fileRef} />
-              <Button onClick={handleImport} alignSelf="end">
+              <Button
+                onClick={handleImport}
+                alignSelf="end"
+                loadingText="Submitting"
+                isLoading={parsingImport}
+              >
                 Import file
               </Button>
+              {errorMessagesImport.length > 0 && (
+                <ZodIssues issues={errorMessagesImport} />
+              )}
               <p>Or paste JSON</p>
               <Textarea
                 placeholder="paste JSON content"
@@ -221,3 +263,11 @@ function ZodIssues({ issues }: { issues: ZodIssue[] }) {
     </List>
   );
 }
+
+const reader = (file: File) =>
+  new Promise((resolve, reject) => {
+    const fr = new FileReader();
+    fr.onload = () => resolve(fr.result);
+    fr.onerror = (err) => reject(err);
+    fr.readAsText(file);
+  });
