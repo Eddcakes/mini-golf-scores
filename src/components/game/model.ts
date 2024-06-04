@@ -31,7 +31,7 @@ export const initialNewGameState = {
   players: [],
   description: "",
   location: "",
-  date: new Date().toISOString().split("T")[0],
+  date: new Date().toISOString(),
   maxShots: 10,
   currentPlayer: "",
   holes: 9,

@@ -1,5 +1,5 @@
-import { entries, get, set } from "idb-keyval";
-import { IScore } from "../models/data";
+import { entries, get, set, setMany } from "idb-keyval";
+import { IScore, ImportData } from "../models/data";
 import { Player } from "../components/game/model";
 
 type NewGame = {
@@ -29,6 +29,7 @@ export async function createRecord(data: NewGame): Promise<RecordResponse> {
     created: timeStamp,
     updated: timeStamp,
     complete: false,
+    archived: false,
   };
   let unique: string;
   if (window.isSecureContext) {
@@ -63,6 +64,7 @@ export type IDBProperties = {
   created: string;
   updated: string;
   complete: boolean;
+  archived: boolean;
 };
 
 export async function getIncompleteGames() {
@@ -133,4 +135,15 @@ export async function setDetails(
       return { success: false, message: "Game not found" };
     }
   });
+}
+
+export async function setImportRecords(records: ImportData) {
+  const idbReady = records.flatMap((record) => Object.entries(record));
+  return await setMany(idbReady)
+    .then(() => {
+      return { success: true, message: "Records imported" };
+    })
+    .catch((error) => {
+      return { success: false, message: error };
+    });
 }
