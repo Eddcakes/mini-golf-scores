@@ -42,7 +42,7 @@ export function Tooltip({
       const tooltipContent = select(tooltipRef.current).select(
         ".tooltip-content"
       );
-      tooltipContent.attr("transform", (cur, i, nodes) => {
+      tooltipContent.attr("transform", (_, i, nodes) => {
         const theNodes = nodes as SVGElement[];
         const tooltipWidth = theNodes[i]?.getBoundingClientRect()?.width || 0;
         const translateX =

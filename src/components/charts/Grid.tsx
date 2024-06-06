@@ -107,8 +107,8 @@ export function Axis({
         const data = textElements.data();
         const index = bisector((d) => d).center(data, xHole);
         textElements
-          .attr("opacity", (d, i) => (i === index ? 1 : 0.5))
-          .style("font-weight", (d, i) => (i === index ? "bold" : "normal"));
+          .attr("opacity", (_, i) => (i === index ? 1 : 0.5))
+          .style("font-weight", (_, i) => (i === index ? "bold" : "normal"));
       });
   }, [anchorEl, scale]);
 
