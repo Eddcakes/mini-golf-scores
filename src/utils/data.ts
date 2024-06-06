@@ -28,3 +28,21 @@ export const formatTooltipText = (details: IScore) => {
   ${details.hole}
   ${details.score}`;
 };
+
+export const promiseFileReader = (file: File) =>
+  new Promise((resolve, reject) => {
+    const fr = new FileReader();
+    fr.onload = () => resolve(fr.result);
+    fr.onerror = (err) => reject(err);
+    fr.readAsText(file);
+  });
+
+export const promiseJSONParse = (content: string) =>
+  new Promise((resolve, reject) => {
+    try {
+      const data = JSON.parse(content);
+      resolve(data);
+    } catch (error) {
+      reject(error);
+    }
+  });
