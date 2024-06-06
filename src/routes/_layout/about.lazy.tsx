@@ -31,7 +31,7 @@ function About() {
         </VStack>
       </Alert>
       <Box p={4}>
-        Originally created to plray with d3 to chart out scores for a mini golf
+        Originally created to play with d3 to chart out scores for a mini golf
         game in <Link to="/prague">prague.</Link>
       </Box>
     </div>

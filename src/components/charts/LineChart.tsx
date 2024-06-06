@@ -4,9 +4,10 @@ import { splitIntoDatasets } from "../../utils/data";
 import { getXScale, getYScale } from "../../utils/charts";
 import { Axis } from "./Grid";
 import { AnimationType, Line } from "./Line";
-import { colorDictionary } from "../../utils/svg";
+import { createColorDictionary } from "../../utils/svg";
 import { Overlay } from "./Overlay";
 import { Tooltip } from "./Tooltip";
+import { Player } from "../game/model";
 import "./LineChart.css";
 
 interface LineChartProps {
@@ -14,6 +15,9 @@ interface LineChartProps {
   cumulative: boolean;
   width: number;
   height: number;
+  totalHoles: number;
+  shotLimitPerHole: number;
+  playerList: Player[];
 }
 
 export function LineChart({
@@ -21,6 +25,9 @@ export function LineChart({
   cumulative = false,
   width,
   height,
+  totalHoles,
+  shotLimitPerHole,
+  playerList,
 }: LineChartProps) {
   const overlayRef = useRef<SVGRectElement>(null);
   const scrollBreakpoint = 770;
@@ -28,11 +35,12 @@ export function LineChart({
   const svgWidth = width < scrollBreakpoint ? 1200 : width;
   const svgHeight = height;
   const minHole = 1;
-  const maxHole = 18;
+  const maxHole = totalHoles;
   const minShot = 0; // min<IScore, number>(data, (d) => d.score); //could -1
-  const maxShot = cumulative ? 100 : 10; // max<IScore, number>(data, (d) => d.score); //could + however many
+  const maxShot = cumulative ? shotLimitPerHole * totalHoles : shotLimitPerHole; // max<IScore, number>(data, (d) => d.score); //could + however many
   const xScale = getXScale(minHole, maxHole, svgWidth - margin);
   const yScale = getYScale(minShot, maxShot, svgHeight - margin);
+  const colorDictionary = createColorDictionary(playerList);
 
   let data: IScore[] = [];
   if (cumulative) {
@@ -56,7 +64,7 @@ export function LineChart({
           axisType="y"
           scale={yScale}
           ticks={(cumulative ? 10 : maxShot) / 2}
-          disableAnimation={false}
+          disableAnimation={true}
           transform=""
         />
       </svg>
@@ -80,7 +88,7 @@ export function LineChart({
               axisType="x"
               scale={xScale}
               ticks={maxHole}
-              disableAnimation={false}
+              disableAnimation={true}
               // why doesn't this work
               // .attr("transform", `translateY(${dims.height}px)`)
               transform={`translate(0, ${svgHeight - margin})`}
@@ -93,6 +101,7 @@ export function LineChart({
               width={width}
               xScale={xScale}
               yScale={yScale}
+              colorDictionary={colorDictionary}
             />
           </Overlay>
         </svg>

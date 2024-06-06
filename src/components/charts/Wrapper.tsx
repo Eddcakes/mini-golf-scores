@@ -4,12 +4,21 @@ import useResizeObserver from "../../hooks/useResizeObserver";
 import { LineChart } from "../../components/charts/LineChart";
 import { Settings } from "../../components/charts/Settings";
 import { IScore } from "../../models/data";
+import { Player } from "../game/model";
 
 interface ChartWrapperProps {
   data: IScore[];
+  totalHoles: number;
+  shotLimitPerHole: number;
+  playerList: Player[];
 }
 
-export function ChartWrapper({ data }: ChartWrapperProps) {
+export function ChartWrapper({
+  data,
+  totalHoles,
+  shotLimitPerHole,
+  playerList,
+}: ChartWrapperProps) {
   const wrapperRef = useRef<HTMLDivElement>(null);
   const { height, width } = useResizeObserver(wrapperRef);
   const legendData = [...new Set(data.map((data) => data.name))];
@@ -47,6 +56,7 @@ export function ChartWrapper({ data }: ChartWrapperProps) {
           onChange={onChangeShowing}
           showing={showing}
           toggleShowingAll={toggleShowingAll}
+          playerList={playerList}
         />
         <div ref={wrapperRef} className="wrapper">
           <LineChart
@@ -54,6 +64,9 @@ export function ChartWrapper({ data }: ChartWrapperProps) {
             cumulative={cumulative}
             height={height}
             width={width}
+            shotLimitPerHole={shotLimitPerHole}
+            totalHoles={totalHoles}
+            playerList={playerList}
           />
           <Settings
             wrapperRef={wrapperRef.current}

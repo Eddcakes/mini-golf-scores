@@ -1,5 +1,10 @@
 import { useState } from "react";
-import { createFileRoute, notFound, useRouter } from "@tanstack/react-router";
+import {
+  Link,
+  createFileRoute,
+  notFound,
+  useRouter,
+} from "@tanstack/react-router";
 import {
   Box,
   Button,
@@ -54,12 +59,14 @@ function Game() {
     // set scores from idb data
     data.scores.forEach((record) => {
       arrayLike[record.hole - 1][record.name] = record.score;
+      arrayLike[record.hole - 1].__par = record.par;
     });
     return arrayLike;
   });
   const totalScores = scoreState.reduce((accumulator, hole) => {
     data.playerList.forEach((player) => {
-      accumulator[player] = (accumulator[player] || 0) + (hole[player] || 0);
+      accumulator[player.name] =
+        (accumulator[player.name] || 0) + (hole[player.name] || 0);
     });
     return accumulator;
   }, {});
@@ -77,9 +84,12 @@ function Game() {
     const newScores: IScore[] = [];
     updatedScoreState.forEach((record, idx) => {
       const hole = idx + 1;
+      // if __par is added, it will come back in object .entries as a name
       Object.entries(record).forEach(([name, score]) => {
+        if (name === "__par") return;
         if (score == null) return;
         newScores.push({
+          par: record.__par ?? null,
           hole: hole,
           name: name,
           score: clamp(score, 0, data.maxShots),
@@ -150,7 +160,11 @@ function Game() {
             <Tr>
               <Th>Hole</Th>
               {data.playerList.map((player) => {
-                return <Th key={player}>{player}</Th>;
+                return (
+                  <Th key={player.name} textAlign="center">
+                    {player.name}
+                  </Th>
+                );
               })}
             </Tr>
           </Thead>
@@ -158,19 +172,37 @@ function Game() {
             {scoreState.map((hole, idx) => {
               return (
                 <Tr key={idx}>
-                  <Td>hole {idx + 1}</Td>
+                  <Td>
+                    <Box display="flex" flexDirection="column">
+                      <span>hole {idx + 1}</span>
+                      {hole?.__par && hole.__par > 0 ? (
+                        <Text
+                          as="span"
+                          fontSize="xs"
+                          fontWeight="bold"
+                          textTransform="uppercase"
+                          color="gray.400"
+                        >
+                          par {hole.__par}
+                        </Text>
+                      ) : null}
+                    </Box>
+                  </Td>
                   {
                     // could do Object.keys() ES2015^ does keep insertion order
                     data.playerList.map((player) => {
                       return data.complete ? (
-                        <Td key={player}>{hole[player] || "-"}</Td>
+                        <Td key={player.name} textAlign="center">
+                          {hole[player.name] || "-"}
+                        </Td>
                       ) : (
                         <Td
-                          key={player}
+                          key={player.name}
                           role="button"
                           onClick={() => openScoreModal(idx)}
+                          textAlign="center"
                         >
-                          {hole[player] || "-"}
+                          {hole[player.name] || "-"}
                         </Td>
                       );
                     })
@@ -189,10 +221,10 @@ function Game() {
               </Th>
               {data.playerList.map((player) => {
                 return (
-                  <Th key={player}>
+                  <Th key={player.name}>
                     <VStack>
-                      <span>{player}</span>
-                      <span>{totalScores[player]}</span>
+                      <span>{player.name}</span>
+                      <span>{totalScores[player.name]}</span>
                     </VStack>
                   </Th>
                 );
@@ -201,8 +233,16 @@ function Game() {
           </Tfoot>
         </Table>
       </TableContainer>
-      {!data.complete && (
-        <Box pt={2} textAlign="center">
+      <Box pt={2} textAlign="center">
+        {data.complete ? (
+          <Button
+            as={Link}
+            to={`/chart/${gameId}`}
+            width={{ base: "100%", md: "unset" }}
+          >
+            View as chart
+          </Button>
+        ) : (
           <Button
             onClick={handleFinish}
             width={{ base: "100%", md: "unset" }}
@@ -210,8 +250,8 @@ function Game() {
           >
             Finish!
           </Button>
-        </Box>
-      )}
+        )}
+      </Box>
       <ScoreModal
         updateScores={publishScores}
         scoreState={scoreState}

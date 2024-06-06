@@ -14,14 +14,15 @@ import {
   Text,
   Wrap,
   WrapItem,
-  Tag,
-  TagLabel,
   useRadioGroup,
   HStack,
+  Box,
 } from "@chakra-ui/react";
 import { getAllGames, IDBRecord } from "../../utils/idb";
 import { useTitle } from "../../hooks/useTitle";
 import { RadioCard } from "../../components/RadioButton";
+import { NoGamesFound } from "../../components/game/NotFound";
+import { PlayerTag } from "../../components/PlayerTag";
 
 // eslint-disable-next-line @typescript-eslint/ban-ts-comment
 // @ts-ignore
@@ -49,6 +50,9 @@ function GameList() {
       localStorage.setItem("gameOrChart", value);
     },
   });
+  if (games.length < 1) {
+    return <NoGamesFound />;
+  }
   return (
     <VStack>
       <Text fontSize="sm" fontWeight="medium" textAlign="center">
@@ -79,7 +83,8 @@ function GameList() {
           <Tbody>
             {games.map((game: IDBRecord) => {
               const id = Object.keys(game)[0];
-              const { date, description, playerList, location } = game[id];
+              const { date, description, playerList, location, complete } =
+                game[id];
               return (
                 <LinkBox
                   as={Tr}
@@ -87,9 +92,16 @@ function GameList() {
                   _hover={{ backgroundColor: "var(--primary-shadow)" }}
                 >
                   <Td>
-                    <LinkOverlay to={`/${value}/${id}`} as={Link}>
-                      {date}
-                    </LinkOverlay>
+                    <VStack>
+                      <LinkOverlay to={`/${value}/${id}`} as={Link}>
+                        {date}
+                      </LinkOverlay>
+                      {!complete && (
+                        <Box as="span" fontSize="xs">
+                          in progress
+                        </Box>
+                      )}
+                    </VStack>
                   </Td>
                   <Td>
                     <VStack textAlign="start">
@@ -106,9 +118,7 @@ function GameList() {
                       {playerList.map((player, index) => {
                         return (
                           <WrapItem key={`${player}-${index}`}>
-                            <Tag colorScheme="orange" borderRadius="full">
-                              <TagLabel>{player}</TagLabel>
-                            </Tag>
+                            <PlayerTag player={player} />
                           </WrapItem>
                         );
                       })}

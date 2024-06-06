@@ -1,4 +1,4 @@
-import { FormEvent, useReducer } from "react";
+import { FormEvent, useReducer, useRef } from "react";
 import {
   Accordion,
   AccordionButton,
@@ -14,32 +14,42 @@ import {
   Input,
   InputGroup,
   InputRightAddon,
-  Tag,
   TagCloseButton,
-  TagLabel,
   Text,
   VStack,
   Wrap,
   WrapItem,
   useToast,
 } from "@chakra-ui/react";
+import { useNavigate } from "@tanstack/react-router";
 import { initialNewGameState, newGameReducer } from "./model";
 import { createRecord } from "../../utils/idb";
-import { useNavigate } from "@tanstack/react-router";
 import { NumberInput } from "../NumberInput";
 import { clamp } from "../../utils/dataTransform";
+import { PlayerTag } from "../PlayerTag";
 
 export function NewGame() {
   const navigate = useNavigate();
   const toast = useToast();
   const [formState, dispatch] = useReducer(newGameReducer, initialNewGameState);
+  const playerColorRef = useRef<HTMLInputElement>(null);
   const addPlayer = (
     event: FormEvent<HTMLButtonElement | HTMLInputElement>
   ) => {
     event.preventDefault();
     if (formState.currentPlayer === "") return;
     // do some validation
-    dispatch({ type: "addPlayer", payload: formState.currentPlayer });
+    dispatch({
+      type: "addPlayer",
+      payload: {
+        name: formState.currentPlayer,
+        color: playerColorRef.current?.value ?? "#000000",
+      },
+    });
+    // reset the color picker input
+    if (playerColorRef.current) {
+      playerColorRef.current.value = "#000000";
+    }
     dispatch({ type: "setCurrentPlayer", payload: "" });
   };
 
@@ -59,13 +69,19 @@ export function NewGame() {
     const createdGame = await createRecord(data);
     if (createdGame.success) {
       resetForm();
+      toast({
+        title: "Game created",
+        description: `Game created, redirecting to scores page...`,
+        status: "success",
+        duration: 3000,
+        isClosable: true,
+      });
       navigate({ from: "/", to: `/game/${createdGame.message}` });
     } else {
       toast({
         title: "Failed to create game",
         description: `${createdGame.message}`,
         status: "error",
-        duration: 2000,
         isClosable: true,
       });
     }
@@ -175,7 +191,6 @@ export function NewGame() {
             <InputGroup>
               <Input
                 type="text"
-                id="currentPlayer"
                 name="currentPlayer"
                 value={formState.currentPlayer}
                 onChange={(evt) =>
@@ -191,6 +206,16 @@ export function NewGame() {
                 }}
               />
               <InputRightAddon padding={0}>
+                <Input
+                  name="currentPlayerColor"
+                  type="color"
+                  borderRadius={0}
+                  cursor="pointer"
+                  px={2}
+                  inlineSize="50px"
+                  defaultValue="#000000"
+                  ref={playerColorRef}
+                />
                 <Button
                   paddingX={6}
                   onClick={addPlayer}
@@ -205,14 +230,19 @@ export function NewGame() {
             {formState.players.map((player, index) => {
               return (
                 <WrapItem key={`${player}-${index}`}>
-                  <Tag colorScheme="orange" borderRadius="full">
-                    <TagLabel>{player}</TagLabel>
-                    <TagCloseButton
-                      onClick={() =>
-                        dispatch({ type: "removePlayer", payload: player })
-                      }
-                    />
-                  </Tag>
+                  <PlayerTag
+                    player={player}
+                    closeButton={
+                      <TagCloseButton
+                        onClick={() =>
+                          dispatch({
+                            type: "removePlayer",
+                            payload: player.name,
+                          })
+                        }
+                      />
+                    }
+                  />
                 </WrapItem>
               );
             })}

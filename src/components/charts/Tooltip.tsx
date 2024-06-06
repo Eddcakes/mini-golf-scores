@@ -2,7 +2,6 @@ import { useCallback, useEffect, useRef } from "react";
 import { bisector, max, pointer, select, selectAll } from "d3";
 import { IDataset, IScore } from "../../models/data";
 import { XScale, YScale } from "../../utils/charts";
-import { colorDictionary } from "../../utils/svg";
 import "./Tooltip.css";
 
 interface TooltipProps {
@@ -12,6 +11,7 @@ interface TooltipProps {
   height: number;
   data: IDataset[];
   anchorEl: SVGRectElement | null;
+  colorDictionary: Record<string, string>;
 }
 
 export function Tooltip({
@@ -21,6 +21,7 @@ export function Tooltip({
   height,
   data,
   anchorEl,
+  colorDictionary,
 }: TooltipProps) {
   const tooltipRef = useRef<SVGGElement>(null);
   const drawLine = useCallback(

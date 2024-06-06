@@ -1,6 +1,7 @@
 import { FormEvent, useState } from "react";
 import {
   Button,
+  Divider,
   FormControl,
   FormErrorMessage,
   FormLabel,
@@ -80,58 +81,67 @@ export function ScoreModal({
     resetModalFor();
     setLocalScoreState([...scoreState]);
   };
+  if (modalForIndex == null) return null;
   return (
     <Modal isOpen={isOpen} onClose={closeModal}>
       <ModalOverlay>
         <ModalContent>
           <form onSubmit={submitScoresForHole}>
-            <ModalHeader>Hole: {modalForIndex! + 1} Update Scores</ModalHeader>
+            <ModalHeader>Hole {modalForIndex + 1} - Update Scores</ModalHeader>
             <ModalCloseButton />
             <ModalBody>
               <VStack>
-                {modalForIndex != null ? (
-                  Object.keys(localScoreState[modalForIndex]).map((player) => {
-                    return (
-                      <FormControl
-                        key={player}
-                        isInvalid={
-                          selectScoreValue(modalForIndex, player) > maxShots ||
-                          selectScoreValue(modalForIndex, player) < 0
-                        }
-                      >
-                        <FormLabel>{player}</FormLabel>
-                        <NumberInput
-                          value={selectScoreValue(modalForIndex, player)}
-                          onChange={(evt) => {
-                            setLocalScoreState((prev) => {
-                              const newState = [...prev];
-                              modalForIndex != null
-                                ? (newState[modalForIndex][player] = newState[
-                                    modalForIndex
-                                  ][player] =
-                                    parseInt(evt.target.value))
-                                : // tried clamping here but not great UX, so just show error message
-                                  null;
-                              return newState;
-                            });
-                          }}
-                          onMinus={() =>
-                            handleMinus1Score(modalForIndex, player)
-                          }
-                          onPlus={() => handleAdd1Score(modalForIndex, player)}
-                        />
-                        <FormErrorMessage>
-                          {selectScoreValue(modalForIndex, player) > maxShots &&
-                            `Score is above the maximum shots value: ${maxShots}, when saving this score will be set to ${maxShots}`}
-                          {selectScoreValue(modalForIndex, player) < 0 &&
-                            `Score is below 0, when saving this score will be set to 0`}
-                        </FormErrorMessage>
-                      </FormControl>
-                    );
-                  })
-                ) : (
-                  <div>not found hole</div>
-                )}
+                {Object.keys(localScoreState[modalForIndex]).map((player) => {
+                  if (player === "__par") return null;
+                  return (
+                    <ScoreInput
+                      key={player}
+                      label={player}
+                      value={selectScoreValue(modalForIndex, player)}
+                      onChange={(evt) => {
+                        setLocalScoreState((prev) => {
+                          const newState = [...prev];
+                          modalForIndex != null
+                            ? (newState[modalForIndex][player] = newState[
+                                modalForIndex
+                              ][player] =
+                                parseInt(evt.target.value))
+                            : // tried clamping here but not great UX, so just show error message
+                              null;
+                          return newState;
+                        });
+                      }}
+                      onMinus={() => handleMinus1Score(modalForIndex, player)}
+                      onPlus={() => handleAdd1Score(modalForIndex, player)}
+                      isInvalid={
+                        selectScoreValue(modalForIndex, player) > maxShots ||
+                        selectScoreValue(modalForIndex, player) < 0
+                      }
+                      errorMessage={`${
+                        (selectScoreValue(modalForIndex, player) > maxShots &&
+                          `Score is above the maximum shots value: ${maxShots}, when saving this score will be set to ${maxShots}`) ||
+                        (selectScoreValue(modalForIndex, player) < 0 &&
+                          `Score is below 0, when saving this score will be set to 0`)
+                      }`}
+                    />
+                  );
+                })}
+                <Divider orientation="horizontal" pt={2} />
+                <ScoreInput
+                  label="PAR"
+                  value={localScoreState[modalForIndex]?.__par ?? 0}
+                  onChange={(evt) => {
+                    setLocalScoreState((prev) => {
+                      const newState = [...prev];
+                      newState[modalForIndex].__par = parseInt(
+                        evt.target.value
+                      );
+                      return newState;
+                    });
+                  }}
+                  onMinus={() => handleMinus1Score(modalForIndex, "__par")}
+                  onPlus={() => handleAdd1Score(modalForIndex, "__par")}
+                />
               </VStack>
             </ModalBody>
             <ModalFooter>
@@ -143,5 +153,38 @@ export function ScoreModal({
         </ModalContent>
       </ModalOverlay>
     </Modal>
+  );
+}
+
+interface ScoreInputProps {
+  isInvalid?: boolean;
+  errorMessage?: string;
+  label: string;
+  value: number;
+  onChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
+  onMinus: () => void;
+  onPlus: () => void;
+}
+
+function ScoreInput({
+  isInvalid,
+  errorMessage,
+  label,
+  value,
+  onChange,
+  onMinus,
+  onPlus,
+}: ScoreInputProps) {
+  return (
+    <FormControl isInvalid={isInvalid}>
+      <FormLabel>{label}</FormLabel>
+      <NumberInput
+        value={value}
+        onChange={onChange}
+        onMinus={onMinus}
+        onPlus={onPlus}
+      />
+      <FormErrorMessage>{errorMessage}</FormErrorMessage>
+    </FormControl>
   );
 }
