@@ -23,7 +23,7 @@ function Index() {
     if (incompleteGames.length > 0) {
       onOpen();
     }
-  }, []);
+  }, [onOpen, incompleteGames]);
   return (
     <div>
       <NewGame />

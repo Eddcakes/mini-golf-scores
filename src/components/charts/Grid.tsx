@@ -46,7 +46,7 @@ export function GridLine({
     gridGroup.select(".domain").remove();
     gridGroup.selectAll("text").remove();
     gridGroup.selectAll("line").attr("stroke", "rgba(255, 255, 255, 0.1)");
-  }, [scale, ticks, disableAnimation]);
+  }, [scale, ticks, disableAnimation, axisType]);
   return <g ref={gRef} transform={transform}></g>;
 }
 
@@ -89,7 +89,7 @@ export function Axis({
       .selectAll("text")
       .attr("opacity", 0.5)
       .attr("font-size", "0.75rem");
-  }, [scale, ticks, disableAnimation]);
+  }, [scale, ticks, disableAnimation, axisType]);
 
   useEffect(() => {
     if (!anchorEl) return;

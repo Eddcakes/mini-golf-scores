@@ -135,7 +135,15 @@ export function Tooltip({
       drawContent(baseXPos, pointerPositionX - 48);
       drawBackground();
     },
-    [anchorEl, data, drawLine, drawContent, drawBackground, xScale, yScale]
+    [
+      data,
+      drawLine,
+      drawContent,
+      drawBackground,
+      xScale,
+      yScale,
+      onChangePosition,
+    ]
   );
 
   useEffect(() => {

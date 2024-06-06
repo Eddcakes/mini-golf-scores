@@ -52,7 +52,7 @@ export function Settings({ wrapperRef, height, width }: SettingsRef) {
         setPosition(refPosition);
       }
     }
-  }, [height, width]);
+  }, [height, width, isOpen, wrapperRef]);
 
   if (!wrapperRef) return null;
   return (

@@ -1,7 +1,7 @@
 import { useCallback, useEffect, useRef } from "react";
 import { easeLinear, line, select } from "d3";
 import { IScore } from "../../models/data";
-import { XScale, YScale } from "../../utils/charts";
+import { AnimationType, XScale, YScale } from "../../utils/charts";
 
 interface LineProps {
   xScale: XScale;
@@ -79,12 +79,6 @@ export function Line({ xScale, yScale, color, data, animation }: LineProps) {
       opacity={0}
     />
   );
-}
-
-export enum AnimationType {
-  LEFT = "LEFT",
-  FADE_IN = "FADE_IN",
-  NO_ANIMATION = "NO_ANIMATION",
 }
 
 function exhaustiveGuard(_value: never): never {

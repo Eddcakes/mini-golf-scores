@@ -8,3 +8,9 @@ export const getXScale = (min: number, max: number, width: number): XScale =>
 
 export const getYScale = (min: number, max: number, height: number): YScale =>
   scaleLinear().domain([max, min]).range([0, height]);
+
+export enum AnimationType {
+  LEFT = "LEFT",
+  FADE_IN = "FADE_IN",
+  NO_ANIMATION = "NO_ANIMATION",
+}
