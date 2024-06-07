@@ -1,9 +1,9 @@
 import { useRef } from "react";
 import { IScore } from "../../models/data";
 import { splitIntoDatasets } from "../../utils/data";
-import { getXScale, getYScale } from "../../utils/charts";
+import { AnimationType, getXScale, getYScale } from "../../utils/charts";
 import { Axis } from "./Grid";
-import { AnimationType, Line } from "./Line";
+import { Line } from "./Line";
 import { createColorDictionary } from "../../utils/svg";
 import { Overlay } from "./Overlay";
 import { Tooltip } from "./Tooltip";

@@ -42,7 +42,7 @@ export function NoGamesFound() {
             <Link to="/settings">export</Link> your games.
           </Text>
           <Text pt={2}>
-            Or get started by creating a <Link to="/game/">new game</Link>.
+            Or get started by creating a <Link to="/game">new game</Link>.
           </Text>
         </AlertDescription>
       </VStack>
