@@ -169,8 +169,8 @@ declare module '@tanstack/react-router' {
     }
     '/_layout/game/': {
       id: '/_layout/game/'
-      path: '/game/'
-      fullPath: '/game/'
+      path: '/game'
+      fullPath: '/game'
       preLoaderRoute: typeof LayoutGameIndexImport
       parentRoute: typeof LayoutImport
     }
@@ -197,3 +197,74 @@ export const routeTree = rootRoute.addChildren({
 })
 
 /* prettier-ignore-end */
+
+/* ROUTE_MANIFEST_START
+{
+  "routes": {
+    "__root__": {
+      "filePath": "__root.tsx",
+      "children": [
+        "/_charts",
+        "/_layout"
+      ]
+    },
+    "/_charts": {
+      "filePath": "_charts.tsx",
+      "children": [
+        "/_charts/prague",
+        "/_charts/chart/$gameId"
+      ]
+    },
+    "/_layout": {
+      "filePath": "_layout.tsx",
+      "children": [
+        "/_layout/about",
+        "/_layout/settings",
+        "/_layout/",
+        "/_layout/game/$gameId",
+        "/_layout/game/"
+      ]
+    },
+    "/_charts/prague": {
+      "filePath": "_charts/prague.lazy.tsx",
+      "parent": "/_charts"
+    },
+    "/_layout/about": {
+      "filePath": "_layout/about.lazy.tsx",
+      "parent": "/_layout"
+    },
+    "/_layout/settings": {
+      "filePath": "_layout/settings.lazy.tsx",
+      "parent": "/_layout",
+      "children": [
+        "/_layout/settings/export",
+        "/_layout/settings/import"
+      ]
+    },
+    "/_layout/": {
+      "filePath": "_layout/index.tsx",
+      "parent": "/_layout"
+    },
+    "/_charts/chart/$gameId": {
+      "filePath": "_charts/chart.$gameId.tsx",
+      "parent": "/_charts"
+    },
+    "/_layout/game/$gameId": {
+      "filePath": "_layout/game.$gameId.tsx",
+      "parent": "/_layout"
+    },
+    "/_layout/settings/export": {
+      "filePath": "_layout/settings.export.tsx",
+      "parent": "/_layout/settings"
+    },
+    "/_layout/settings/import": {
+      "filePath": "_layout/settings.import.lazy.tsx",
+      "parent": "/_layout/settings"
+    },
+    "/_layout/game/": {
+      "filePath": "_layout/game.index.tsx",
+      "parent": "/_layout"
+    }
+  }
+}
+ROUTE_MANIFEST_END */
