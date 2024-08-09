@@ -10,7 +10,7 @@ export default defineConfig({
     react(),
     TanStackRouterVite(),
     VitePWA({
-      registerType: "autoUpdate",
+      registerType: "prompt",
       manifest: {
         name: "mini-golf-scores",
         short_name: "puttn",
@@ -69,14 +69,14 @@ export default defineConfig({
         ],
         screenshots: [
           {
-            src: "/images/desktop-small.png",
+            src: "public/images/screenshots/desktop-small.png",
             sizes: "1002x741",
             type: "image/png",
             form_factor: "wide",
             label: "Mini golf scores interactive chart (desktop)",
           },
           {
-            src: "/images/mobile-s8.png",
+            src: "public/images/screenshots/mobile-s8.png",
             sizes: "361x740",
             type: "image/png",
             form_factor: "narrow",
