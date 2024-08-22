@@ -7,14 +7,13 @@
 .ReloadPrompt-toast {
   position: fixed;
   right: 0;
-  bottom: 0;
+  bottom: var(--bottom-nav-height);
   margin: 16px;
   padding: 12px;
   border: 1px solid #8885;
   border-radius: 4px;
   z-index: 1;
   text-align: left;
-  box-shadow: 3px 4px 5px 0 #8885;
   background-color: var(--main-banner-colour);
 }
 .ReloadPrompt-toast-message {
