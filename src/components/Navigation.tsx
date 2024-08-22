@@ -68,7 +68,12 @@ function NavLink({ to, text, icon }: NavLinkProps) {
       }}
     >
       {icon}
-      <Text as="span" fontWeight="semibold" letterSpacing="1px">
+      <Text
+        as="span"
+        fontWeight="semibold"
+        letterSpacing="1px"
+        userSelect="none"
+      >
         {text}
       </Text>
     </Box>

@@ -5,6 +5,7 @@ import { RouterProvider, createRouter } from "@tanstack/react-router";
 import { routeTree } from "./routeTree.gen";
 import theme from "./theme";
 import "./index.css";
+import ReloadPrompt from "./components/ReloadPrompt";
 
 const router = createRouter({ routeTree });
 
@@ -19,6 +20,7 @@ ReactDOM.createRoot(document.getElementById("root")!).render(
   <React.StrictMode>
     <ChakraProvider theme={theme}>
       <RouterProvider router={router} />
+      <ReloadPrompt />
     </ChakraProvider>
   </React.StrictMode>
 );

@@ -73,6 +73,7 @@ export const Logo = (props: IconProps) => {
       fontSize="3rem"
       {...props}
     >
+      <title>mini-golf-scores home</title>
       <path
         strokeLinecap="round"
         strokeLinejoin="round"
@@ -90,6 +91,7 @@ export const SparklesIcon = (props: IconProps) => {
       viewBox="0 0 24 24"
       strokeWidth={1.5}
       stroke="currentColor"
+      role="img"
       {...props}
     >
       <path

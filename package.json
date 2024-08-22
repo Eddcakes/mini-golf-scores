@@ -9,7 +9,8 @@
     "lint": "eslint . --ext ts,tsx --report-unused-disable-directives --max-warnings 0",
     "build": "tsc && vite build",
     "test": "vitest",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "preview:host": "vite preview --host"
   },
   "dependencies": {
     "@chakra-ui/icons": "^2.1.1",
@@ -40,6 +41,9 @@
     "eslint-plugin-react-refresh": "^0.4.6",
     "typescript": "^5.4.5",
     "vite": "^5.2.12",
-    "vitest": "^1.6.0"
+    "vite-plugin-mkcert": "^1.17.5",
+    "vite-plugin-pwa": "^0.20.0",
+    "vitest": "^1.6.0",
+    "workbox-window": "^7.1.0"
   }
 }
