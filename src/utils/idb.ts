@@ -17,7 +17,7 @@ type RecordResponse = {
 };
 
 export async function createRecord(data: NewGame): Promise<RecordResponse> {
-  const timeStamp = new Date().toISOString();
+  const timeStamp = new Date().toISOString().split("T")[0];
   const record: IDBProperties = {
     description: data.description,
     location: data.location,
@@ -99,7 +99,7 @@ export async function setScores(
   return await get(gameId).then((record) => {
     if (record) {
       record.scores = scores;
-      record.updated = new Date().toISOString();
+      record.updated = new Date().toISOString().split("T")[0];
       return set(gameId, record)
         .then(() => {
           return { success: true, message: "Scores updated" };
@@ -122,7 +122,7 @@ export async function setDetails(
       const newRecord = {
         ...record,
         ...details,
-        updated: new Date().toISOString(),
+        updated: new Date().toISOString().split("T")[0],
       };
       return set(gameId, newRecord)
         .then(() => {
