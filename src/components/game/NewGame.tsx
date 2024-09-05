@@ -5,6 +5,12 @@ import {
   AccordionIcon,
   AccordionItem,
   AccordionPanel,
+  AlertDialog,
+  AlertDialogBody,
+  AlertDialogContent,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogOverlay,
   Button,
   Center,
   FormControl,
@@ -19,6 +25,7 @@ import {
   VStack,
   Wrap,
   WrapItem,
+  useDisclosure,
   useToast,
 } from "@chakra-ui/react";
 import { useNavigate } from "@tanstack/react-router";
@@ -32,17 +39,16 @@ export function NewGame() {
   const navigate = useNavigate();
   const toast = useToast();
   const [formState, dispatch] = useReducer(newGameReducer, initialNewGameState);
+  const { isOpen, onOpen, onClose } = useDisclosure();
   const playerColorRef = useRef<HTMLInputElement>(null);
-  const addPlayer = (
-    event: FormEvent<HTMLButtonElement | HTMLInputElement>
-  ) => {
-    event.preventDefault();
-    if (formState.currentPlayer === "") return;
-    // do some validation
+  const cancelRef = useRef<HTMLButtonElement>(null);
+
+  const addPlayer = () => {
+    // do we want some validation on the player name?
     dispatch({
       type: "addPlayer",
       payload: {
-        name: formState.currentPlayer,
+        name: formState.currentPlayer.trim(),
         color: playerColorRef.current?.value ?? "#000000",
       },
     });
@@ -53,10 +59,46 @@ export function NewGame() {
     dispatch({ type: "setCurrentPlayer", payload: "" });
   };
 
+  const submitPlayer = (
+    event: FormEvent<HTMLButtonElement | HTMLInputElement>
+  ) => {
+    event.preventDefault();
+    if (formState.currentPlayer === "") return;
+    addPlayer();
+  };
+
+  const checkFields = () => {
+    if (formState.players.length < 1) {
+      toast({
+        title: "No players added",
+        description: "Please add at least one player to the game",
+        status: "error",
+        isClosable: true,
+      });
+      return false;
+    }
+    if (formState.holes < 1) {
+      toast({
+        title: "Invalid number of holes",
+        description: "Please set at least 1",
+        status: "error",
+        isClosable: true,
+      });
+      return false;
+    }
+    if (formState.currentPlayer !== "") {
+      // open alert dialog if we have a player in the input that we haven't added yet
+      onOpen();
+      return false;
+    }
+    return true;
+  };
+
   const createGame = async (event: FormEvent) => {
     event.preventDefault();
     // do some validation
-    if (formState.players.length < 1) return;
+    const fieldsValid = checkFields();
+    if (!fieldsValid) return;
     const data = {
       description: formState.description,
       location: formState.location,
@@ -85,6 +127,11 @@ export function NewGame() {
         isClosable: true,
       });
     }
+  };
+
+  const handleMissingPlayerDialog = () => {
+    addPlayer();
+    onClose();
   };
 
   const resetForm = () => {
@@ -201,7 +248,7 @@ export function NewGame() {
                 }
                 onKeyDown={(evt) => {
                   if (evt.key === "Enter") {
-                    addPlayer(evt);
+                    submitPlayer(evt);
                   }
                 }}
               />
@@ -218,7 +265,7 @@ export function NewGame() {
                 />
                 <Button
                   paddingX={6}
-                  onClick={addPlayer}
+                  onClick={submitPlayer}
                   borderRadius="0 var(--chakra-radii-md) var(--chakra-radii-md) 0"
                 >
                   Add
@@ -313,6 +360,36 @@ export function NewGame() {
           </Button>
         </VStack>
       </form>
+      <AlertDialog
+        isOpen={isOpen}
+        leastDestructiveRef={cancelRef}
+        onClose={onClose}
+      >
+        <AlertDialogOverlay>
+          <AlertDialogContent>
+            <AlertDialogHeader fontSize="lg" fontWeight="bold">
+              Player not added
+            </AlertDialogHeader>
+
+            <AlertDialogBody>
+              Do you want to add '{formState.currentPlayer}' to the game?
+            </AlertDialogBody>
+
+            <AlertDialogFooter>
+              <Button ref={cancelRef} onClick={onClose}>
+                Cancel
+              </Button>
+              <Button
+                colorScheme="red"
+                onClick={handleMissingPlayerDialog}
+                ml={3}
+              >
+                Add {formState.currentPlayer}
+              </Button>
+            </AlertDialogFooter>
+          </AlertDialogContent>
+        </AlertDialogOverlay>
+      </AlertDialog>
     </VStack>
   );
 }
