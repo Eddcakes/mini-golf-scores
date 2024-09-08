@@ -186,7 +186,13 @@ export function Tooltip({
       </g>
       {data.map(({ label }) => {
         return (
-          <circle className="tooltip-point" r={6} key={label} opacity={0} />
+          <circle
+            className="tooltip-point"
+            r={6}
+            key={label}
+            opacity={0}
+            fill={colorDictionary[label]}
+          />
         );
       })}
     </g>
