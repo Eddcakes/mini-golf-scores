@@ -53,13 +53,6 @@ export function ChartWrapper({
   return (
     <>
       <div>
-        <Legend
-          data={legendData}
-          onChange={onChangeShowing}
-          showing={showing}
-          toggleShowingAll={toggleShowingAll}
-          playerList={playerList}
-        />
         <div ref={wrapperRef} className="wrapper">
           <LineChart
             initialData={chartData}
@@ -77,11 +70,19 @@ export function ChartWrapper({
           />
         </div>
         <div id="portal-root"></div>
+        <Legend
+          data={legendData}
+          onChange={onChangeShowing}
+          showing={showing}
+          toggleShowingAll={toggleShowingAll}
+          playerList={playerList}
+        />
       </div>
       <RadioGroup
         value={chartView}
         onChange={(value) => setChartView(value as RadioOption)}
         py={4}
+        colorScheme="orange"
       >
         <Stack spacing={5} direction="row">
           <Radio value="hole">By hole</Radio>
