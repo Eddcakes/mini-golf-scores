@@ -3,7 +3,6 @@ import { Radio, RadioGroup, Stack } from "@chakra-ui/react";
 import { Legend } from "../../components/charts/Legend";
 import useResizeObserver from "../../hooks/useResizeObserver";
 import { LineChart } from "../../components/charts/LineChart";
-import { Settings } from "../../components/charts/Settings";
 import { IScore } from "../../models/data";
 import { Player } from "../game/model";
 
@@ -62,11 +61,6 @@ export function ChartWrapper({
             shotLimitPerHole={shotLimitPerHole}
             totalHoles={totalHoles}
             playerList={playerList}
-          />
-          <Settings
-            wrapperRef={wrapperRef.current}
-            height={height}
-            width={width}
           />
         </div>
         <div id="portal-root"></div>
