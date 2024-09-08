@@ -26,9 +26,7 @@ export function ThemeProvider({ children }: ThemeProviderProps) {
   };
   return (
     <ThemeContext.Provider value={{ theme, toggleTheme }}>
-      <div id="app" data-theme={theme}>
-        {children}
-      </div>
+      <div data-theme={theme}>{children}</div>
     </ThemeContext.Provider>
   );
 }

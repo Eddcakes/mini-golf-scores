@@ -52,7 +52,7 @@ export function ChartWrapper({
   return (
     <>
       <div>
-        <div ref={wrapperRef} className="wrapper">
+        <div ref={wrapperRef}>
           <LineChart
             initialData={chartData}
             cumulative={chartView === "overall"}
@@ -63,7 +63,6 @@ export function ChartWrapper({
             playerList={playerList}
           />
         </div>
-        <div id="portal-root"></div>
         <Legend
           data={legendData}
           onChange={onChangeShowing}
