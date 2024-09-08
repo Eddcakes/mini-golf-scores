@@ -1,4 +1,4 @@
-import { Box, Button, Checkbox } from "@chakra-ui/react";
+import { Box, Button, Checkbox, Wrap } from "@chakra-ui/react";
 import { Player } from "../game/model";
 
 interface LegendProps {
@@ -17,23 +17,21 @@ export const Legend = ({
   playerList,
 }: LegendProps) => {
   return (
-    <Box
-      display="flex"
-      fontWeight="bold"
-      justifyContent="space-around"
-      py={4}
-      alignItems="center"
-      flexWrap="wrap"
-    >
-      <Button onClick={toggleShowingAll} colorScheme="orange">
-        {showing.length > 0 ? "Uncheck all" : "Check all"}
+    <Box fontWeight="bold" py={4} display="flex">
+      <Button onClick={toggleShowingAll} colorScheme="orange" width="7rem">
+        {showing.length > 0 ? "Uncheck" : "Check"}
       </Button>
-
-      {data.map((player) => {
-        const color = playerList.find((p) => p.name === player)?.color;
-        return (
-          <div key={player}>
+      <Wrap
+        display="flex"
+        justifyContent="space-around"
+        alignItems="center"
+        flexWrap="wrap"
+      >
+        {data.map((player) => {
+          const color = playerList.find((p) => p.name === player)?.color;
+          return (
             <Checkbox
+              key={player}
               value={player}
               isChecked={showing.includes(player)}
               onChange={() => onChange(player)}
@@ -45,12 +43,13 @@ export const Legend = ({
               }}
               borderColor={color}
               iconColor="white"
+              p={2}
             >
               {player}
             </Checkbox>
-          </div>
-        );
-      })}
+          );
+        })}
+      </Wrap>
     </Box>
   );
 };

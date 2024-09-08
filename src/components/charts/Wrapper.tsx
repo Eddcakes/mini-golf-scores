@@ -81,7 +81,6 @@ export function ChartWrapper({
       <RadioGroup
         value={chartView}
         onChange={(value) => setChartView(value as RadioOption)}
-        py={4}
         colorScheme="orange"
       >
         <Stack spacing={5} direction="row">
