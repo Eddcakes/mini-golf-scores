@@ -1,9 +1,9 @@
 import { Link, createFileRoute, notFound } from "@tanstack/react-router";
+import { Button } from "@chakra-ui/react";
 import { getGame } from "../../utils/idb";
 import { GameNotFound } from "../../components/game/NotFound";
 import { useTitle } from "../../hooks/useTitle";
 import { ChartWrapper } from "../../components/charts/Wrapper";
-import { Button } from "@chakra-ui/react";
 
 export const Route = createFileRoute("/_charts/chart/$gameId")({
   loader: async ({ params }) => {

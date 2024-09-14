@@ -1,10 +1,6 @@
 .tooltip-line {
   stroke: var(--primary-colour);
-  stroke-width: 1;
-}
-
-.tooltip-point {
-  fill: var(--primary-colour);
+  stroke-width: 3;
 }
 
 .content-title {
