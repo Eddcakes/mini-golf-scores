@@ -20,7 +20,7 @@ export const Route = createLazyFileRoute("/_layout/settings/import")({
 function ImportModal() {
   const navigate = useNavigate();
   const handleClose = () => {
-    navigate({ from: "/settings/export", to: `/settings` });
+    navigate({ from: "/settings/import", to: `/settings` });
   };
 
   return (

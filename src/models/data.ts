@@ -34,15 +34,15 @@ export const zScore = z.object({
 export const zIdbValue = z.object({
   archived: z.boolean(),
   complete: z.boolean(),
-  created: z.string().datetime(),
-  date: z.string().datetime(),
+  created: z.string().date(),
+  date: z.string().date(),
   description: z.string(),
   holes: z.number(),
   location: z.string(),
   maxShots: z.number(),
   playerList: z.array(zPlayer),
   scores: z.array(zScore),
-  updated: z.string().datetime(),
+  updated: z.string().date(),
 });
 
 export const zIdbRecord = z.record(z.string(), zIdbValue);
